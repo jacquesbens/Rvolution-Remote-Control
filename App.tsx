@@ -2,6 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
+import { Inter_300Light, Inter_400Regular } from '@expo-google-fonts/inter';
 
 export default function App() {
   const [theme, setTheme] = useState('light');
@@ -11,6 +12,8 @@ export default function App() {
   const [fontsLoaded] = useFonts({
     PlayfairDisplay_400Regular,
     PlayfairDisplay_700Bold,
+    Inter_300Light,
+    Inter_400Regular,
   });
 
   useEffect(() => {
@@ -62,17 +65,18 @@ export default function App() {
           styles.title,
           { 
             color: theme === 'light' ? '#333' : '#fff',
-            fontFamily: 'PlayfairDisplay_700Bold'
+            fontFamily: 'PlayfairDisplay_400Regular',
+            fontWeight: '300'
           }
         ]}>
-          Welcome to Kiki
+          welcome to kiki
         </Text>
         
         <Text style={[
           styles.subtitle,
           { 
             color: theme === 'light' ? '#666' : '#ccc',
-            fontFamily: 'PlayfairDisplay_400Regular'
+            fontFamily: 'Inter_300Light'
           }
         ]}>
           Tell the AI what to make!
@@ -83,7 +87,7 @@ export default function App() {
             styles.poweredBy,
             { 
               color: theme === 'light' ? '#666' : '#ccc',
-              fontFamily: 'PlayfairDisplay_400Regular'
+              fontFamily: 'Inter_300Light'
             }
           ]}>
             Powered by
