@@ -79,7 +79,7 @@ export default function App() {
             fontFamily: 'Inter_300Light'
           }
         ]}>
-          Tell the AI what to make!
+          tell the ai what to make!
         </Text>
 
         <View style={styles.reactContainer}>
@@ -90,7 +90,7 @@ export default function App() {
               fontFamily: 'Inter_300Light'
             }
           ]}>
-            Powered by
+            powered by
           </Text>
           <Image 
             source={require('./assets/images/react-logo.png')} 
