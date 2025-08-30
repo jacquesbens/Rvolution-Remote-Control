@@ -1,41 +1,49 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image, TouchableOpacity, Animated } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
+import { useFonts, PlayfairDisplay_400Regular, PlayfairDisplay_700Bold } from '@expo-google-fonts/playfair-display';
 
 export default function App() {
   const [theme, setTheme] = useState('light');
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.9)).current;
 
-  useEffect(() => {
-    // Fade in animation when component mounts
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      }),
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 4,
-        tension: 40,
-        useNativeDriver: true,
-      })
-    ]).start();
+  const [fontsLoaded] = useFonts({
+    PlayfairDisplay_400Regular,
+    PlayfairDisplay_700Bold,
   });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      // Fade in animation when component mounts
+      Animated.parallel([
+        Animated.timing(fadeAnim, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnim, {
+          toValue: 1,
+          friction: 4,
+          tension: 40,
+          useNativeDriver: true,
+        })
+      ]).start();
+    }
+  }, [fontsLoaded]);
 
   const toggleTheme = () => {
     setTheme(theme === 'light' ? 'dark' : 'light');
   };
 
-  const logoSource = theme === 'light' 
-    ? require('./assets/images/appacella-logo-blue.png')
-    : require('./assets/images/appacella-logo-white.png');
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={[
       styles.container,
-      { backgroundColor: theme === 'light' ? '#f0f8ff' : '#1a1a2e' }
+      { backgroundColor: theme === 'light' ? '#ffffff' : '#1a1a2e' }
     ]}>
       <Animated.View style={[
         styles.content,
@@ -45,21 +53,27 @@ export default function App() {
         }
       ]}>
         <Image 
-          source={logoSource} 
+          source={require('./assets/images/icon.png')} 
           style={styles.logo} 
           resizeMode="contain"
         />
         
         <Text style={[
           styles.title,
-          { color: theme === 'light' ? '#333' : '#fff' }
+          { 
+            color: theme === 'light' ? '#333' : '#fff',
+            fontFamily: 'PlayfairDisplay_700Bold'
+          }
         ]}>
           Welcome to Kiki
         </Text>
         
         <Text style={[
           styles.subtitle,
-          { color: theme === 'light' ? '#666' : '#ccc' }
+          { 
+            color: theme === 'light' ? '#666' : '#ccc',
+            fontFamily: 'PlayfairDisplay_400Regular'
+          }
         ]}>
           Tell the AI what to make!
         </Text>
@@ -67,7 +81,10 @@ export default function App() {
         <View style={styles.reactContainer}>
           <Text style={[
             styles.poweredBy,
-            { color: theme === 'light' ? '#666' : '#ccc' }
+            { 
+              color: theme === 'light' ? '#666' : '#ccc',
+              fontFamily: 'PlayfairDisplay_400Regular'
+            }
           ]}>
             Powered by
           </Text>
@@ -113,17 +130,17 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 200,
-    height: 100,
+    height: 200,
     marginBottom: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
   },
   subtitle: {
-    fontSize: 18,
+    fontSize: 20,
     marginBottom: 30,
     textAlign: 'center',
   },
@@ -133,7 +150,7 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   poweredBy: {
-    fontSize: 14,
+    fontSize: 16,
     marginRight: 6,
   },
   reactLogo: {
