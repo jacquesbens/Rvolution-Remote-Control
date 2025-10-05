@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Serif App Update",
-    "slug": "user-app-94c57eb1",
+    "name": "Your Kiki App",
+    "slug": "user-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -9,18 +9,18 @@
     "newArchEnabled": true,
     "scheme": "user-app",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.kiki.userapp.94c57eb1"
+      "bundleIdentifier": "dev.kiki.userapp"
     },
     "android": {
-      "package": "dev.kiki.userapp.jemfholb",
+      "package": "dev.kiki.userapp",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
       }
     },
@@ -33,7 +33,7 @@
       [
         "expo-router",
         {
-          "origin": "https://pool-ecs-fargate-mvp-dev-task-455f5c65.dev.kiki.dev"
+          "origin": "https://${SUBDOMAIN}.dev.kiki.dev"
         }
       ],
       [
