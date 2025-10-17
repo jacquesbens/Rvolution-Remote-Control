@@ -2,17 +2,55 @@ import { PlayerStatus } from '../types';
 
 const HTTP_TIMEOUT = 5000;
 
-// Codes IR pour les commandes R_VOLUTION
+// Codes IR officiels pour les commandes R_VOLUTION
 // Format: http://<player-ip-address>/cgi-bin/do?cmd=ir_code&ir_code=<CODE>
 const IR_CODES = {
-  PLAY: 'F10E4040',        // Code IR pour Play
-  PAUSE: 'F10E4041',       // Code IR pour Pause
-  STOP: 'F10E4042',        // Code IR pour Stop
-  NEXT: 'F10E4043',        // Code IR pour Next
-  PREVIOUS: 'F10E4044',    // Code IR pour Previous
-  VOLUME_UP: 'F10E4045',   // Code IR pour Volume +
-  VOLUME_DOWN: 'F10E4046', // Code IR pour Volume -
-  MUTE: 'F10E4047',        // Code IR pour Mute
+  // Lecture et contrôle
+  PLAY_PAUSE: 'AC534040',    // Play/Pause (toggle)
+  STOP: 'BD424040',          // Stop
+  NEXT: 'E11E4040',          // Next
+  PREVIOUS: 'E01F4040',      // Previous
+  
+  // Volume
+  VOLUME_UP: 'E7184040',     // Volume Up
+  VOLUME_DOWN: 'E8174040',   // Volume Down
+  MUTE: 'BC434040',          // Mute
+  
+  // Navigation avancée
+  FAST_FORWARD: 'E41BBF00',  // Fast Forward
+  FAST_REVERSE: 'E31CBF00',  // Fast Reverse
+  FORWARD_60SEC: 'EE114040', // 60 sec forward
+  REWIND_60SEC: 'EF104040',  // 60 sec rewind
+  FORWARD_10SEC: 'BF404040', // 10 sec forward
+  REWIND_10SEC: 'DF204040',  // 10 sec rewind
+  
+  // Navigation curseur
+  CURSOR_UP: 'F40B4040',     // Cursor Up
+  CURSOR_DOWN: 'F10E4040',   // Cursor Down
+  CURSOR_LEFT: 'EF104040',   // Cursor Left
+  CURSOR_RIGHT: 'EE114040',  // Cursor Right
+  CURSOR_ENTER: 'F20D4040',  // Cursor Enter
+  
+  // Menu et navigation
+  HOME: 'E51A4040',          // Home
+  MENU: 'BA454040',          // Menu
+  INFO: 'BB444040',          // Info
+  RETURN: 'BD424040',        // Return
+  
+  // Fonctions spéciales
+  POWER_TOGGLE: 'B24D4040',  // Power Toggle
+  POWER_ON: '4CB34040',      // Power On
+  POWER_OFF: '4AB54040',     // Power Off
+  AUDIO: 'E6194040',         // Audio
+  SUBTITLE: 'E41B4040',      // Subtitle
+  REPEAT: 'B9464040',        // Repeat
+  ZOOM: 'E21D4040',          // Zoom
+  
+  // Fonctions couleur
+  FUNCTION_RED: 'A68E4040',     // Function Red
+  FUNCTION_GREEN: 'F50A4040',   // Function Green
+  FUNCTION_YELLOW: 'BE414040',  // Function Yellow
+  FUNCTION_BLUE: 'AB544040',    // Function Blue
 };
 
 export class RvolutionPlayerAPI {
@@ -58,21 +96,22 @@ export class RvolutionPlayerAPI {
 
   async checkConnection(): Promise<boolean> {
     try {
-      // Tester la connexion avec une commande simple
+      // Tester la connexion avec l'endpoint CGI
       const response = await this.fetchWithTimeout(`${this.baseUrl}/cgi-bin/do?cmd=ir_code&ir_code=TEST`);
-      return response.status !== 404; // Si le serveur répond (même avec une erreur), il est accessible
+      return response.status !== 404;
     } catch (error) {
       console.error('Connection check failed:', error);
       return false;
     }
   }
 
+  // Commandes de lecture principales
   async play(): Promise<boolean> {
-    return this.sendIRCommand(IR_CODES.PLAY);
+    return this.sendIRCommand(IR_CODES.PLAY_PAUSE);
   }
 
   async pause(): Promise<boolean> {
-    return this.sendIRCommand(IR_CODES.PAUSE);
+    return this.sendIRCommand(IR_CODES.PLAY_PAUSE);
   }
 
   async stop(): Promise<boolean> {
@@ -87,6 +126,7 @@ export class RvolutionPlayerAPI {
     return this.sendIRCommand(IR_CODES.PREVIOUS);
   }
 
+  // Contrôle du volume
   async volumeUp(): Promise<boolean> {
     return this.sendIRCommand(IR_CODES.VOLUME_UP);
   }
@@ -99,8 +139,116 @@ export class RvolutionPlayerAPI {
     return this.sendIRCommand(IR_CODES.MUTE);
   }
 
+  // Navigation avancée
+  async fastForward(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FAST_FORWARD);
+  }
+
+  async fastReverse(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FAST_REVERSE);
+  }
+
+  async forward60Sec(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FORWARD_60SEC);
+  }
+
+  async rewind60Sec(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.REWIND_60SEC);
+  }
+
+  async forward10Sec(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FORWARD_10SEC);
+  }
+
+  async rewind10Sec(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.REWIND_10SEC);
+  }
+
+  // Navigation curseur
+  async cursorUp(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.CURSOR_UP);
+  }
+
+  async cursorDown(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.CURSOR_DOWN);
+  }
+
+  async cursorLeft(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.CURSOR_LEFT);
+  }
+
+  async cursorRight(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.CURSOR_RIGHT);
+  }
+
+  async cursorEnter(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.CURSOR_ENTER);
+  }
+
+  // Menu et navigation
+  async home(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.HOME);
+  }
+
+  async menu(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.MENU);
+  }
+
+  async info(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.INFO);
+  }
+
+  async return(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.RETURN);
+  }
+
+  // Fonctions spéciales
+  async powerToggle(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.POWER_TOGGLE);
+  }
+
+  async powerOn(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.POWER_ON);
+  }
+
+  async powerOff(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.POWER_OFF);
+  }
+
+  async audio(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.AUDIO);
+  }
+
+  async subtitle(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.SUBTITLE);
+  }
+
+  async repeat(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.REPEAT);
+  }
+
+  async zoom(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.ZOOM);
+  }
+
+  // Fonctions couleur
+  async functionRed(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FUNCTION_RED);
+  }
+
+  async functionGreen(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FUNCTION_GREEN);
+  }
+
+  async functionYellow(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FUNCTION_YELLOW);
+  }
+
+  async functionBlue(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FUNCTION_BLUE);
+  }
+
   // Note: Le contrôle du volume par valeur exacte n'est pas disponible avec les codes IR
-  // On utilise volumeUp/volumeDown à la place
   async setVolume(volume: number): Promise<boolean> {
     console.warn('setVolume: Le contrôle du volume par valeur exacte n\'est pas disponible avec les codes IR');
     return false;

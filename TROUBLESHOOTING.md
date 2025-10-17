@@ -52,15 +52,54 @@ L'application utilise le format CGI avec codes IR :
 
 Format : `http://<player-ip-address>/cgi-bin/do?cmd=ir_code&ir_code=<CODE>`
 
-Codes IR utilisés :
-- `F10E4040` - Play
-- `F10E4041` - Pause
-- `F10E4042` - Stop
-- `F10E4043` - Next
-- `F10E4044` - Previous
-- `F10E4045` - Volume Up
-- `F10E4046` - Volume Down
-- `F10E4047` - Mute
+Codes IR officiels R_VOLUTION :
+
+**Lecture et contrôle :**
+- `AC534040` - Play/Pause (toggle)
+- `BD424040` - Stop
+- `E11E4040` - Next
+- `E01F4040` - Previous
+
+**Volume :**
+- `E7184040` - Volume Up
+- `E8174040` - Volume Down
+- `BC434040` - Mute
+
+**Navigation avancée :**
+- `E41BBF00` - Fast Forward
+- `E31CBF00` - Fast Reverse
+- `EE114040` - 60 sec forward
+- `EF104040` - 60 sec rewind
+- `BF404040` - 10 sec forward
+- `DF204040` - 10 sec rewind
+
+**Navigation curseur :**
+- `F40B4040` - Cursor Up
+- `F10E4040` - Cursor Down
+- `EF104040` - Cursor Left
+- `EE114040` - Cursor Right
+- `F20D4040` - Cursor Enter
+
+**Menu et navigation :**
+- `E51A4040` - Home
+- `BA454040` - Menu
+- `BB444040` - Info
+- `BD424040` - Return
+
+**Fonctions spéciales :**
+- `B24D4040` - Power Toggle
+- `4CB34040` - Power On
+- `4AB54040` - Power Off
+- `E6194040` - Audio
+- `E41B4040` - Subtitle
+- `B9464040` - Repeat
+- `E21D4040` - Zoom
+
+**Fonctions couleur :**
+- `A68E4040` - Function Red
+- `F50A4040` - Function Green
+- `BE414040` - Function Yellow
+- `AB544040` - Function Blue
 
 **Note** : Ces codes IR sont des exemples. Vérifiez les codes IR réels de votre appareil R_VOLUTION.
 
@@ -121,20 +160,24 @@ Pour accélérer :
 
 ## Configuration des codes IR
 
-Si les codes IR par défaut ne fonctionnent pas, vous devez les modifier dans le fichier `services/playerAPI.ts` :
+Les codes IR officiels R_VOLUTION sont maintenant intégrés dans l'application.
+
+Si vous avez besoin de modifier ou d'ajouter des codes, éditez le fichier `services/playerAPI.ts` :
 
 ```typescript
 const IR_CODES = {
-  PLAY: 'VOTRE_CODE_PLAY',
-  PAUSE: 'VOTRE_CODE_PAUSE',
-  STOP: 'VOTRE_CODE_STOP',
-  NEXT: 'VOTRE_CODE_NEXT',
-  PREVIOUS: 'VOTRE_CODE_PREVIOUS',
-  VOLUME_UP: 'VOTRE_CODE_VOLUME_UP',
-  VOLUME_DOWN: 'VOTRE_CODE_VOLUME_DOWN',
-  MUTE: 'VOTRE_CODE_MUTE',
+  PLAY_PAUSE: 'AC534040',    // Play/Pause (toggle)
+  STOP: 'BD424040',          // Stop
+  NEXT: 'E11E4040',          // Next
+  PREVIOUS: 'E01F4040',      // Previous
+  VOLUME_UP: 'E7184040',     // Volume Up
+  VOLUME_DOWN: 'E8174040',   // Volume Down
+  MUTE: 'BC434040',          // Mute
+  // ... autres codes
 };
 ```
+
+**Note importante :** Play et Pause utilisent le même code IR (`AC534040`) car c'est un toggle (bascule).
 
 ## Support
 
