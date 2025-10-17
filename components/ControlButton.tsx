@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     margin: 8,
   },
   smallButton: {
-    width: 80,
-    height: 80,
+    width: 85,
+    height: 85,
     margin: 6,
   },
   disabledButton: {
