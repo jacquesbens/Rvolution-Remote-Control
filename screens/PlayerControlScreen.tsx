@@ -322,7 +322,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
             {renderSmallButton('format-list-bulleted', 'Format', () => api.formatScroll(), 'format', '#9C27B0')}
           </View>
           <View style={styles.specialRow}>
-            {renderSmallButton('mouse', 'Souris', () => api.mouse(), 'mouse', '#9C27B0')}
             {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#9C27B0')}
             {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#9C27B0')}
           </View>
