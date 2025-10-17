@@ -28,6 +28,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
   const [port, setPort] = useState('80');
   const [deviceName, setDeviceName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [debugInfo, setDebugInfo] = useState('');
 
   const validateIP = (ip: string): boolean => {
     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
@@ -58,8 +59,10 @@ export default function AddDeviceScreen({ navigation }: Props) {
     }
 
     setLoading(true);
+    setDebugInfo(`Tentative de connexion à http://${ipAddress}:${portNumber}/status...`);
 
     try {
+      console.log(`🔍 Tentative de connexion à ${ipAddress}:${portNumber}`);
       const device = await createDeviceFromIP(ipAddress, portNumber);
 
       if (device) {
@@ -68,20 +71,38 @@ export default function AddDeviceScreen({ navigation }: Props) {
         }
         
         await addDevice(device);
+        console.log('✅ Appareil ajouté avec succès');
         Alert.alert(
           'Succès',
-          'Appareil ajouté avec succès',
+          `Appareil ajouté avec succès\n${device.name}`,
           [{ text: 'OK', onPress: () => navigation.goBack() }]
         );
       } else {
+        console.log('❌ Impossible de se connecter à l\'appareil');
+        setDebugInfo('');
         Alert.alert(
-          'Erreur',
-          'Impossible de se connecter à l\'appareil. Vérifiez l\'adresse IP et que l\'appareil est allumé.'
+          'Connexion impossible',
+          `Impossible de se connecter à http://${ipAddress}:${portNumber}\n\n` +
+          'Vérifiez que :\n' +
+          '• L\'appareil est allumé\n' +
+          '• L\'adresse IP est correcte\n' +
+          '• L\'appareil est sur le même réseau Wi-Fi\n' +
+          '• Le port ${portNumber} est accessible\n' +
+          '• L\'endpoint /status existe et répond',
+          [
+            { text: 'Réessayer', onPress: handleAddDevice },
+            { text: 'OK', style: 'cancel' }
+          ]
         );
       }
     } catch (error) {
-      console.error('Error adding device:', error);
-      Alert.alert('Erreur', 'Une erreur est survenue lors de l\'ajout de l\'appareil');
+      console.error('❌ Erreur lors de l\'ajout:', error);
+      setDebugInfo('');
+      Alert.alert(
+        'Erreur',
+        `Une erreur est survenue :\n${error}\n\nVérifiez votre connexion réseau.`,
+        [{ text: 'OK' }]
+      );
     } finally {
       setLoading(false);
     }
@@ -140,6 +161,12 @@ export default function AddDeviceScreen({ navigation }: Props) {
             editable={!loading}
           />
 
+          {debugInfo ? (
+            <View style={styles.debugBox}>
+              <Text style={styles.debugText}>{debugInfo}</Text>
+            </View>
+          ) : null}
+
           <TouchableOpacity
             style={[styles.addButton, loading && styles.disabledButton]}
             onPress={handleAddDevice}
@@ -158,7 +185,9 @@ export default function AddDeviceScreen({ navigation }: Props) {
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={20} color="#2196F3" />
             <Text style={styles.infoText}>
-              Assurez-vous que votre appareil R_VOLUTION est allumé et connecté au même réseau Wi-Fi.
+              L\'application va tenter de se connecter à http://{ipAddress || '...'}{port ? `:${port}` : ':80'}/status
+              {'\n\n'}
+              Assurez-vous que votre appareil R_VOLUTION répond à cette URL.
             </Text>
           </View>
         </View>
@@ -255,5 +284,18 @@ const styles = StyleSheet.create({
     color: '#1976D2',
     marginLeft: 12,
     lineHeight: 20,
+  },
+  debugBox: {
+    backgroundColor: '#FFF3E0',
+    borderRadius: 8,
+    padding: 12,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: '#FFB74D',
+  },
+  debugText: {
+    fontSize: 12,
+    color: '#E65100',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
   },
 });
