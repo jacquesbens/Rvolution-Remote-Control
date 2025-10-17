@@ -41,12 +41,12 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       console.log(`🎮 Exécution de la commande: ${commandName}`);
       const success = await command();
       if (!success) {
-        Alert.alert('Erreur', `Impossible d\'exécuter la commande: ${commandName}`);
+        Alert.alert('Erreur', `Impossible d'exécuter la commande: ${commandName}`);
       } else {
         console.log(`✅ Commande ${commandName} exécutée avec succès`);
       }
     } catch (error) {
-      console.error(`❌ Erreur lors de l\'exécution de ${commandName}:`, error);
+      console.error(`❌ Erreur lors de l'exécution de ${commandName}:`, error);
       Alert.alert('Erreur', 'Une erreur est survenue');
     } finally {
       setLoading(null);
@@ -62,6 +62,33 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
     setVolume(prev => Math.max(0, prev - 5));
     handleCommand(() => api.volumeDown(), 'volume_down');
   };
+
+  const renderSmallButton = (
+    icon: keyof typeof MaterialIcons.glyphMap,
+    label: string,
+    command: () => Promise<boolean>,
+    commandName: string,
+    color?: string
+  ) => (
+    <TouchableOpacity
+      style={[styles.smallButton, color && { backgroundColor: color }]}
+      onPress={() => handleCommand(command, commandName)}
+      disabled={loading === commandName}
+    >
+      <MaterialIcons name={icon} size={24} color="#fff" />
+      <Text style={styles.smallButtonText}>{label}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderNumberButton = (number: number) => (
+    <TouchableOpacity
+      style={styles.numberButton}
+      onPress={() => handleCommand(() => (api as any)[`digit${number}`](), `digit_${number}`)}
+      disabled={loading === `digit_${number}`}
+    >
+      <Text style={styles.numberButtonText}>{number}</Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -80,14 +107,168 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.statusCard}>
-          <MaterialIcons name="speaker" size={80} color="#2196F3" />
-          <Text style={styles.statusTitle}>R_VOLUTION</Text>
-          <Text style={styles.statusSubtitle}>Lecteur multimédia</Text>
+        {/* Alimentation */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⚡ Alimentation</Text>
+          <View style={styles.powerRow}>
+            {renderSmallButton('power-settings-new', 'Power', () => api.powerToggle(), 'power_toggle', '#F44336')}
+            {renderSmallButton('power', 'ON', () => api.powerOn(), 'power_on', '#4CAF50')}
+            {renderSmallButton('power-off', 'OFF', () => api.powerOff(), 'power_off', '#9E9E9E')}
+          </View>
         </View>
 
-        <View style={styles.volumeContainer}>
-          <Text style={styles.volumeLabel}>Volume</Text>
+        {/* Pavé numérique */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔢 Pavé numérique</Text>
+          <View style={styles.numberPad}>
+            <View style={styles.numberRow}>
+              {renderNumberButton(1)}
+              {renderNumberButton(2)}
+              {renderNumberButton(3)}
+            </View>
+            <View style={styles.numberRow}>
+              {renderNumberButton(4)}
+              {renderNumberButton(5)}
+              {renderNumberButton(6)}
+            </View>
+            <View style={styles.numberRow}>
+              {renderNumberButton(7)}
+              {renderNumberButton(8)}
+              {renderNumberButton(9)}
+            </View>
+            <View style={styles.numberRow}>
+              <View style={styles.numberButton} />
+              {renderNumberButton(0)}
+              <View style={styles.numberButton} />
+            </View>
+          </View>
+        </View>
+
+        {/* Navigation curseur */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎯 Navigation</Text>
+          <View style={styles.dpadContainer}>
+            <View style={styles.dpadRow}>
+              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.cursorUp(), 'cursor_up')}
+                disabled={loading === 'cursor_up'}
+              >
+                <MaterialIcons name="keyboard-arrow-up" size={40} color="#fff" />
+              </TouchableOpacity>
+              <View style={styles.dpadSpacer} />
+            </View>
+            <View style={styles.dpadRow}>
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.cursorLeft(), 'cursor_left')}
+                disabled={loading === 'cursor_left'}
+              >
+                <MaterialIcons name="keyboard-arrow-left" size={40} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.dpadButton, styles.dpadCenter]}
+                onPress={() => handleCommand(() => api.cursorEnter(), 'cursor_enter')}
+                disabled={loading === 'cursor_enter'}
+              >
+                <MaterialIcons name="check" size={32} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.cursorRight(), 'cursor_right')}
+                disabled={loading === 'cursor_right'}
+              >
+                <MaterialIcons name="keyboard-arrow-right" size={40} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.dpadRow}>
+              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.cursorDown(), 'cursor_down')}
+                disabled={loading === 'cursor_down'}
+              >
+                <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
+              </TouchableOpacity>
+              <View style={styles.dpadSpacer} />
+            </View>
+          </View>
+        </View>
+
+        {/* Menu et navigation */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📱 Menu</Text>
+          <View style={styles.menuRow}>
+            {renderSmallButton('home', 'Home', () => api.home(), 'home', '#2196F3')}
+            {renderSmallButton('menu', 'Menu', () => api.menu(), 'menu', '#2196F3')}
+            {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
+            {renderSmallButton('arrow-back', 'Retour', () => api.return(), 'return', '#2196F3')}
+          </View>
+        </View>
+
+        {/* Contrôles de lecture */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="play-arrow"
+              label="Play"
+              onPress={() => handleCommand(() => api.play(), 'play')}
+              loading={loading === 'play'}
+              size="small"
+            />
+            <ControlButton
+              icon="pause"
+              label="Pause"
+              onPress={() => handleCommand(() => api.pause(), 'pause')}
+              loading={loading === 'pause'}
+              size="small"
+            />
+            <ControlButton
+              icon="stop"
+              label="Stop"
+              onPress={() => handleCommand(() => api.stop(), 'stop')}
+              loading={loading === 'stop'}
+              size="small"
+            />
+          </View>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="skip-previous"
+              label="Préc."
+              onPress={() => handleCommand(() => api.previous(), 'previous')}
+              loading={loading === 'previous'}
+              size="small"
+            />
+            <ControlButton
+              icon="skip-next"
+              label="Suiv."
+              onPress={() => handleCommand(() => api.next(), 'next')}
+              loading={loading === 'next'}
+              size="small"
+            />
+          </View>
+        </View>
+
+        {/* Navigation temporelle */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>⏱️ Navigation temporelle</Text>
+          <View style={styles.timeRow}>
+            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#FF9800')}
+            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#FF9800')}
+          </View>
+          <View style={styles.timeRow}>
+            {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#FFC107')}
+            {renderSmallButton('replay-10', '-10s', () => api.rewind10Sec(), 'rewind_10', '#FFC107')}
+            {renderSmallButton('forward-10', '+10s', () => api.forward10Sec(), 'forward_10', '#FFC107')}
+            {renderSmallButton('forward-10', '+60s', () => api.forward60Sec(), 'forward_60', '#FFC107')}
+          </View>
+        </View>
+
+        {/* Volume */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔊 Volume</Text>
           <View style={styles.volumeControls}>
             <TouchableOpacity
               style={styles.volumeButton}
@@ -112,66 +293,58 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               <MaterialIcons name="volume-up" size={32} color="#2196F3" />
             </TouchableOpacity>
           </View>
+          <View style={styles.muteRow}>
+            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
+          </View>
         </View>
 
-        <View style={styles.controlsContainer}>
-          <Text style={styles.sectionTitle}>Contrôles de lecture</Text>
-          <View style={styles.mainControls}>
-            <ControlButton
-              icon="play-arrow"
-              label="Lecture"
-              onPress={() => handleCommand(() => api.play(), 'play')}
-              loading={loading === 'play'}
-            />
-            <ControlButton
-              icon="pause"
-              label="Pause"
-              onPress={() => handleCommand(() => api.pause(), 'pause')}
-              loading={loading === 'pause'}
-            />
-            <ControlButton
-              icon="stop"
-              label="Stop"
-              onPress={() => handleCommand(() => api.stop(), 'stop')}
-              loading={loading === 'stop'}
-            />
+        {/* Fonctions spéciales */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
+          <View style={styles.specialRow}>
+            {renderSmallButton('audiotrack', 'Audio', () => api.audio(), 'audio', '#9C27B0')}
+            {renderSmallButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle', '#9C27B0')}
+            {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#9C27B0')}
+            {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#9C27B0')}
           </View>
-
-          <Text style={styles.sectionTitle}>Navigation</Text>
-          <View style={styles.navigationControls}>
-            <ControlButton
-              icon="skip-previous"
-              label="Précédent"
-              onPress={() => handleCommand(() => api.previous(), 'previous')}
-              loading={loading === 'previous'}
-              size="small"
-            />
-            <ControlButton
-              icon="skip-next"
-              label="Suivant"
-              onPress={() => handleCommand(() => api.next(), 'next')}
-              loading={loading === 'next'}
-              size="small"
-            />
+          <View style={styles.specialRow}>
+            {renderSmallButton('3d-rotation', '3D', () => api.threeD(), '3d', '#9C27B0')}
+            {renderSmallButton('video-library', 'R_video', () => api.rVideo(), 'r_video', '#9C27B0')}
+            {renderSmallButton('folder', 'Explorer', () => api.explorer(), 'explorer', '#9C27B0')}
+            {renderSmallButton('format-list-bulleted', 'Format', () => api.formatScroll(), 'format', '#9C27B0')}
           </View>
+          <View style={styles.specialRow}>
+            {renderSmallButton('mouse', 'Souris', () => api.mouse(), 'mouse', '#9C27B0')}
+            {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#9C27B0')}
+            {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#9C27B0')}
+          </View>
+        </View>
 
-          <View style={styles.extraControls}>
-            <TouchableOpacity
-              style={styles.muteButton}
-              onPress={() => handleCommand(() => api.mute(), 'mute')}
-              disabled={loading === 'mute'}
-            >
-              <MaterialIcons name="volume-off" size={24} color="#fff" />
-              <Text style={styles.muteButtonText}>Muet</Text>
-            </TouchableOpacity>
+        {/* Pagination */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>📄 Pagination</Text>
+          <View style={styles.pageRow}>
+            {renderSmallButton('arrow-upward', 'Page ↑', () => api.pageUp(), 'page_up', '#00BCD4')}
+            {renderSmallButton('arrow-downward', 'Page ↓', () => api.pageDown(), 'page_down', '#00BCD4')}
+          </View>
+        </View>
+
+        {/* Boutons de fonction couleur */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🎨 Fonctions couleur</Text>
+          <View style={styles.colorRow}>
+            {renderSmallButton('circle', 'Rouge', () => api.functionRed(), 'function_red', '#F44336')}
+            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#4CAF50')}
+            {renderSmallButton('circle', 'Jaune', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
+            {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>
         </View>
 
         <View style={styles.infoBox}>
           <MaterialIcons name="info" size={20} color="#2196F3" />
           <Text style={styles.infoText}>
-            Les commandes sont envoyées via codes IR au format:{'\n'}
-            http://{device.ipAddress}/cgi-bin/do?cmd=ir_code&ir_code=...
+            Toutes les commandes sont envoyées via codes IR{'\n'}
+            Format: http://{device.ipAddress}/cgi-bin/do?cmd=ir_code&ir_code=...
           </Text>
         </View>
       </ScrollView>
@@ -215,53 +388,144 @@ const styles = StyleSheet.create({
     width: 40,
   },
   content: {
-    padding: 20,
+    padding: 16,
   },
-  statusCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 32,
-    alignItems: 'center',
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  statusTitle: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 16,
-  },
-  statusSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 4,
-  },
-  volumeContainer: {
+  section: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 20,
-    marginBottom: 24,
+    padding: 16,
+    marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
   },
-  volumeLabel: {
+  sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 16,
+    marginBottom: 12,
+  },
+  powerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  menuRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+  },
+  playbackRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
+  specialRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    marginBottom: 8,
+  },
+  pageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  colorRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  smallButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 70,
+    margin: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  smallButtonText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginTop: 4,
     textAlign: 'center',
+  },
+  numberPad: {
+    alignItems: 'center',
+  },
+  numberRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 8,
+  },
+  numberButton: {
+    backgroundColor: '#607D8B',
+    borderRadius: 8,
+    width: 60,
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  numberButtonText: {
+    color: '#fff',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  dpadContainer: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  dpadRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dpadButton: {
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    width: 70,
+    height: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  dpadCenter: {
+    backgroundColor: '#1976D2',
+  },
+  dpadSpacer: {
+    width: 70,
+    height: 70,
+    margin: 4,
   },
   volumeControls: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginBottom: 12,
   },
   volumeButton: {
     padding: 12,
@@ -290,50 +554,9 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#2196F3',
   },
-  controlsContainer: {
-    alignItems: 'center',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  mainControls: {
+  muteRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 24,
-  },
-  navigationControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 24,
-  },
-  extraControls: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 24,
-  },
-  muteButton: {
-    backgroundColor: '#FF5722',
-    borderRadius: 8,
-    padding: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-  muteButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
   },
   infoBox: {
     flexDirection: 'row',

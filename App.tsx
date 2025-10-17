@@ -13,7 +13,7 @@ export type RootStackParamList = {
   PlayerControl: { device: RvolutionDevice };
 };
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
   return (

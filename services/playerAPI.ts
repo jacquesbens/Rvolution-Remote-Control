@@ -51,6 +51,29 @@ const IR_CODES = {
   FUNCTION_GREEN: 'F50A4040',   // Function Green
   FUNCTION_YELLOW: 'BE414040',  // Function Yellow
   FUNCTION_BLUE: 'AB544040',    // Function Blue
+  
+  // Fonctions supplémentaires
+  THREE_D: 'ED124040',          // 3D
+  R_VIDEO: 'EC134040',          // R_video
+  EXPLORER: 'EA164040',         // Explorer
+  FORMAT_SCROLL: 'EB144040',    // Format Scroll
+  MOUSE: 'B98F4040',            // Mouse
+  DIMMER: 'A45B4040',           // Dimmer
+  PAGE_UP: 'BF404040',          // Page Up
+  PAGE_DOWN: 'DB204040',        // Page Down
+  DELETE: 'F30C4040',           // Delete
+  
+  // Chiffres
+  DIGIT_0: 'FF004040',
+  DIGIT_1: 'FE014040',
+  DIGIT_2: 'FD024040',
+  DIGIT_3: 'FC034040',
+  DIGIT_4: 'FB044040',
+  DIGIT_5: 'FA054040',
+  DIGIT_6: 'F9064040',
+  DIGIT_7: 'F8074040',
+  DIGIT_8: 'F7084040',
+  DIGIT_9: 'F6094040',
 };
 
 export class RvolutionPlayerAPI {
@@ -246,6 +269,84 @@ export class RvolutionPlayerAPI {
 
   async functionBlue(): Promise<boolean> {
     return this.sendIRCommand(IR_CODES.FUNCTION_BLUE);
+  }
+
+  // Fonctions supplémentaires
+  async threeD(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.THREE_D);
+  }
+
+  async rVideo(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.R_VIDEO);
+  }
+
+  async explorer(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.EXPLORER);
+  }
+
+  async formatScroll(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.FORMAT_SCROLL);
+  }
+
+  async mouse(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.MOUSE);
+  }
+
+  async dimmer(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIMMER);
+  }
+
+  async pageUp(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.PAGE_UP);
+  }
+
+  async pageDown(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.PAGE_DOWN);
+  }
+
+  async deleteKey(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DELETE);
+  }
+
+  // Chiffres
+  async digit0(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_0);
+  }
+
+  async digit1(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_1);
+  }
+
+  async digit2(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_2);
+  }
+
+  async digit3(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_3);
+  }
+
+  async digit4(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_4);
+  }
+
+  async digit5(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_5);
+  }
+
+  async digit6(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_6);
+  }
+
+  async digit7(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_7);
+  }
+
+  async digit8(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_8);
+  }
+
+  async digit9(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.DIGIT_9);
   }
 
   // Note: Le contrôle du volume par valeur exacte n'est pas disponible avec les codes IR
