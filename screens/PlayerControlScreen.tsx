@@ -149,7 +149,13 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <Text style={styles.sectionTitle}>🎯 Navigation</Text>
           <View style={styles.dpadContainer}>
             <View style={styles.dpadRow}>
-              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.home(), 'home')}
+                disabled={loading === 'home'}
+              >
+                <MaterialIcons name="home" size={32} color="#fff" />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorUp(), 'cursor_up')}
@@ -183,7 +189,13 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
-              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.menu(), 'menu')}
+                disabled={loading === 'menu'}
+              >
+                <MaterialIcons name="menu" size={32} color="#fff" />
+              </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorDown(), 'cursor_down')}
@@ -191,19 +203,22 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               >
                 <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
               </TouchableOpacity>
-              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={styles.dpadButton}
+                onPress={() => handleCommand(() => api.return(), 'return')}
+                disabled={loading === 'return'}
+              >
+                <MaterialIcons name="arrow-back" size={32} color="#fff" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
 
-        {/* Menu et navigation */}
+        {/* Menu et navigation - Info uniquement */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📱 Menu</Text>
+          <Text style={styles.sectionTitle}>📱 Info</Text>
           <View style={styles.menuRow}>
-            {renderSmallButton('home', 'Home', () => api.home(), 'home', '#2196F3')}
-            {renderSmallButton('menu', 'Menu', () => api.menu(), 'menu', '#2196F3')}
             {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
-            {renderSmallButton('arrow-back', 'Retour', () => api.return(), 'return', '#2196F3')}
           </View>
         </View>
 
