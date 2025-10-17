@@ -45,12 +45,6 @@
     },
     "plugins": [
       [
-        "expo-router",
-        {
-          "origin": "https://pool-ecs-fargate-mvp-ssh-task-45bd3ca6.dev.kiki.dev"
-        }
-      ],
-      [
         "expo-splash-screen",
         {
           "image": "./assets/images/splash-icon.png",
@@ -61,9 +55,6 @@
       ],
       "expo-font",
       "expo-web-browser"
-    ],
-    "experiments": {
-      "typedRoutes": true
-    }
+    ]
   }
 }
