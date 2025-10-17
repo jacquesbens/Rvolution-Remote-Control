@@ -17,7 +17,7 @@ import { RootStackParamList } from '../App';
 import DeviceCard from '../components/DeviceCard';
 import { RvolutionDevice } from '../types';
 import { loadDevices, removeDevice, saveDevices, addDevice } from '../utils/storage';
-import { checkDeviceAvailability, scanNetwork, quickScan } from '../services/networkDiscovery';
+import { checkDeviceAvailability, scanNetwork } from '../services/networkDiscovery';
 
 type DevicesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Devices'>;
 
@@ -77,64 +77,77 @@ export default function DevicesScreen({ navigation }: Props) {
   };
 
   const handleScanNetwork = async () => {
-    setScanning(true);
-    setScanProgress(0);
-    setFoundDevices(0);
+    // Demander confirmation avant de scanner
+    Alert.alert(
+      'Scanner le réseau',
+      'Cette opération va scanner votre réseau local pour trouver des appareils R_VOLUTION.\n\nCela peut prendre quelques minutes.',
+      [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Scanner',
+          onPress: async () => {
+            setScanning(true);
+            setScanProgress(0);
+            setFoundDevices(0);
 
-    try {
-      console.log('🚀 Démarrage du scan réseau...');
-      
-      const discoveredDevices = await scanNetwork(
-        (device) => {
-          // Callback appelé quand un appareil est trouvé
-          console.log('✅ Appareil découvert:', device.name, device.ipAddress);
-          setFoundDevices(prev => prev + 1);
-          addDevice(device);
-        },
-        (progress) => {
-          // Callback de progression
-          setScanProgress(progress);
+            try {
+              console.log('🚀 Démarrage du scan réseau...');
+              
+              const discoveredDevices = await scanNetwork(
+                (device) => {
+                  // Callback appelé quand un appareil est trouvé
+                  console.log('✅ Appareil découvert:', device.name, device.ipAddress);
+                  setFoundDevices(prev => prev + 1);
+                  addDevice(device);
+                },
+                (progress) => {
+                  // Callback de progression
+                  setScanProgress(progress);
+                }
+              );
+
+              setScanning(false);
+              await loadDevicesList();
+              
+              if (discoveredDevices.length > 0) {
+                Alert.alert(
+                  'Scan terminé',
+                  `${discoveredDevices.length} appareil(s) R_VOLUTION trouvé(s)`,
+                  [{ text: 'OK' }]
+                );
+              } else {
+                Alert.alert(
+                  'Aucun appareil trouvé',
+                  'Aucun appareil R_VOLUTION trouvé sur le réseau.\n\n' +
+                  'Vérifiez que :\n' +
+                  '• Vos appareils sont allumés\n' +
+                  '• Ils sont connectés au même réseau Wi-Fi\n' +
+                  '• Le port 80 est accessible\n' +
+                  '• L\'endpoint /status répond correctement',
+                  [
+                    { text: 'Réessayer', onPress: handleScanNetwork },
+                    { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
+                    { text: 'OK', style: 'cancel' }
+                  ]
+                );
+              }
+            } catch (error) {
+              console.error('❌ Erreur lors du scan:', error);
+              setScanning(false);
+              Alert.alert(
+                'Erreur',
+                'Une erreur est survenue lors du scan du réseau.\n\n' +
+                'Essayez d\'ajouter un appareil manuellement.',
+                [
+                  { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
+                  { text: 'OK', style: 'cancel' }
+                ]
+              );
+            }
+          }
         }
-      );
-
-      setScanning(false);
-      await loadDevicesList();
-      
-      if (discoveredDevices.length > 0) {
-        Alert.alert(
-          'Scan terminé',
-          `${discoveredDevices.length} appareil(s) R_VOLUTION trouvé(s)`,
-          [{ text: 'OK' }]
-        );
-      } else {
-        Alert.alert(
-          'Aucun appareil trouvé',
-          'Aucun appareil R_VOLUTION trouvé sur le réseau.\n\n' +
-          'Vérifiez que :\n' +
-          '• Vos appareils sont allumés\n' +
-          '• Ils sont connectés au même réseau Wi-Fi\n' +
-          '• Le port 80 est accessible\n' +
-          '• L\'endpoint /status répond correctement',
-          [
-            { text: 'Réessayer', onPress: handleScanNetwork },
-            { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
-            { text: 'OK', style: 'cancel' }
-          ]
-        );
-      }
-    } catch (error) {
-      console.error('❌ Erreur lors du scan:', error);
-      setScanning(false);
-      Alert.alert(
-        'Erreur',
-        'Une erreur est survenue lors du scan du réseau.\n\n' +
-        'Essayez d\'ajouter un appareil manuellement.',
-        [
-          { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
-          { text: 'OK', style: 'cancel' }
-        ]
-      );
-    }
+      ]
+    );
   };
 
   const handleDeleteDevice = (deviceId: string) => {
@@ -227,7 +240,7 @@ export default function DevicesScreen({ navigation }: Props) {
             <MaterialIcons name="search" size={60} color="#2196F3" />
             <Text style={styles.modalTitle}>Scan du réseau en cours...</Text>
             <Text style={styles.modalSubtitle}>
-              Recherche d\'appareils R_VOLUTION
+              Recherche d&apos;appareils R_VOLUTION
             </Text>
             
             <View style={styles.progressContainer}>
