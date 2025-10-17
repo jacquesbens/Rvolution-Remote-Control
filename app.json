@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Rvolution Remote Control",
+    "name": "R_VOLUTION Remote",
     "slug": "user-app-ab900c48",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -8,21 +8,35 @@
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "scheme": "user-app",
+    "description": "Contrôlez vos appareils R_VOLUTION depuis votre smartphone. Découverte automatique, contrôle de lecture et gestion du volume.",
     "splash": {
       "image": "./assets/images/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2196F3"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.kiki.userapp.ab900c48"
+      "bundleIdentifier": "dev.kiki.userapp.ab900c48",
+      "buildNumber": "1.0.0",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "Cette application a besoin d'accéder au réseau local pour découvrir et contrôler vos appareils R_VOLUTION.",
+        "NSBonjourServices": [
+          "_http._tcp"
+        ]
+      }
     },
     "android": {
       "package": "dev.kiki.userapp.kljaamei",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#2196F3"
+      },
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "ACCESS_WIFI_STATE"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +56,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#2196F3"
         }
       ],
       "expo-font",
