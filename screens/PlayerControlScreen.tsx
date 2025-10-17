@@ -154,21 +154,21 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.home(), 'home')}
                 disabled={loading === 'home'}
               >
-                <MaterialIcons name="home" size={32} color="#fff" />
+                <MaterialIcons name="home" size={36} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorUp(), 'cursor_up')}
                 disabled={loading === 'cursor_up'}
               >
-                <MaterialIcons name="keyboard-arrow-up" size={40} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-up" size={48} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.return(), 'return')}
-                disabled={loading === 'return'}
+                onPress={() => handleCommand(() => api.info(), 'info')}
+                disabled={loading === 'info'}
               >
-                <MaterialIcons name="arrow-back" size={32} color="#fff" />
+                <MaterialIcons name="info" size={36} color="#fff" />
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
@@ -177,21 +177,21 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.cursorLeft(), 'cursor_left')}
                 disabled={loading === 'cursor_left'}
               >
-                <MaterialIcons name="keyboard-arrow-left" size={40} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-left" size={48} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.dpadButton, styles.dpadCenter]}
                 onPress={() => handleCommand(() => api.cursorEnter(), 'cursor_enter')}
                 disabled={loading === 'cursor_enter'}
               >
-                <MaterialIcons name="check" size={32} color="#fff" />
+                <MaterialIcons name="check" size={36} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorRight(), 'cursor_right')}
                 disabled={loading === 'cursor_right'}
               >
-                <MaterialIcons name="keyboard-arrow-right" size={40} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-right" size={48} color="#fff" />
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
@@ -200,16 +200,22 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.menu(), 'menu')}
                 disabled={loading === 'menu'}
               >
-                <MaterialIcons name="menu" size={32} color="#fff" />
+                <MaterialIcons name="menu" size={36} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorDown(), 'cursor_down')}
                 disabled={loading === 'cursor_down'}
               >
-                <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-down" size={48} color="#fff" />
               </TouchableOpacity>
-              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={[styles.dpadButton, styles.auxiliaryButton]}
+                onPress={() => handleCommand(() => api.return(), 'return')}
+                disabled={loading === 'return'}
+              >
+                <MaterialIcons name="arrow-back" size={36} color="#fff" />
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -224,46 +230,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Contrôles de lecture */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
-          <View style={styles.playbackRow}>
-            <ControlButton
-              icon="play-arrow"
-              label="Play"
-              onPress={() => handleCommand(() => api.play(), 'play')}
-              loading={loading === 'play'}
-              size="small"
-            />
-            <ControlButton
-              icon="pause"
-              label="Pause"
-              onPress={() => handleCommand(() => api.pause(), 'pause')}
-              loading={loading === 'pause'}
-              size="small"
-            />
-            <ControlButton
-              icon="stop"
-              label="Stop"
-              onPress={() => handleCommand(() => api.stop(), 'stop')}
-              loading={loading === 'stop'}
-              size="small"
-            />
-          </View>
-          <View style={styles.playbackRow}>
-            <ControlButton
-              icon="skip-previous"
-              label="Préc."
-              onPress={() => handleCommand(() => api.previous(), 'previous')}
-              loading={loading === 'previous'}
-              size="small"
-            />
-            <ControlButton
-              icon="skip-next"
-              label="Suiv."
-              onPress={() => handleCommand(() => api.next(), 'next')}
-              loading={loading === 'next'}
-              size="small"
-            />
-          </View>
+
         </View>
 
         {/* Navigation temporelle */}
@@ -516,12 +483,12 @@ const styles = StyleSheet.create({
   },
   dpadButton: {
     backgroundColor: '#2196F3',
-    borderRadius: 8,
-    width: 70,
-    height: 70,
+    borderRadius: 12,
+    width: 85,
+    height: 85,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 4,
+    margin: 6,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -535,9 +502,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   dpadSpacer: {
-    width: 70,
-    height: 70,
-    margin: 4,
+    width: 85,
+    height: 85,
+    margin: 6,
   },
   volumeControls: {
     flexDirection: 'row',
