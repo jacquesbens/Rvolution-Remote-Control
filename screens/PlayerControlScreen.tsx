@@ -12,6 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
+import ControlButton from '../components/ControlButton';
 import { RvolutionPlayerAPI } from '../services/playerAPI';
 
 type PlayerControlScreenNavigationProp = NativeStackNavigationProp<
@@ -153,21 +154,21 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.home(), 'home')}
                 disabled={loading === 'home'}
               >
-                <MaterialIcons name="home" size={36} color="#fff" />
+                <MaterialIcons name="home" size={32} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorUp(), 'cursor_up')}
                 disabled={loading === 'cursor_up'}
               >
-                <MaterialIcons name="keyboard-arrow-up" size={48} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-up" size={40} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.info(), 'info')}
-                disabled={loading === 'info'}
+                onPress={() => handleCommand(() => api.return(), 'return')}
+                disabled={loading === 'return'}
               >
-                <MaterialIcons name="info" size={36} color="#fff" />
+                <MaterialIcons name="arrow-back" size={32} color="#fff" />
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
@@ -176,21 +177,21 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.cursorLeft(), 'cursor_left')}
                 disabled={loading === 'cursor_left'}
               >
-                <MaterialIcons name="keyboard-arrow-left" size={48} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-left" size={40} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.dpadButton, styles.dpadCenter]}
                 onPress={() => handleCommand(() => api.cursorEnter(), 'cursor_enter')}
                 disabled={loading === 'cursor_enter'}
               >
-                <MaterialIcons name="check" size={36} color="#fff" />
+                <MaterialIcons name="check" size={32} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorRight(), 'cursor_right')}
                 disabled={loading === 'cursor_right'}
               >
-                <MaterialIcons name="keyboard-arrow-right" size={48} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-right" size={40} color="#fff" />
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
@@ -199,22 +200,16 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 onPress={() => handleCommand(() => api.menu(), 'menu')}
                 disabled={loading === 'menu'}
               >
-                <MaterialIcons name="menu" size={36} color="#fff" />
+                <MaterialIcons name="menu" size={32} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorDown(), 'cursor_down')}
                 disabled={loading === 'cursor_down'}
               >
-                <MaterialIcons name="keyboard-arrow-down" size={48} color="#fff" />
+                <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.return(), 'return')}
-                disabled={loading === 'return'}
-              >
-                <MaterialIcons name="arrow-back" size={36} color="#fff" />
-              </TouchableOpacity>
+              <View style={styles.dpadSpacer} />
             </View>
           </View>
         </View>
@@ -229,17 +224,93 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Contrôles de lecture */}
         <View style={styles.section}>
-
+          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="play-arrow"
+              label="Play"
+              onPress={() => handleCommand(() => api.play(), 'play')}
+              loading={loading === 'play'}
+              size="small"
+            />
+            <ControlButton
+              icon="pause"
+              label="Pause"
+              onPress={() => handleCommand(() => api.pause(), 'pause')}
+              loading={loading === 'pause'}
+              size="small"
+            />
+            <ControlButton
+              icon="stop"
+              label="Stop"
+              onPress={() => handleCommand(() => api.stop(), 'stop')}
+              loading={loading === 'stop'}
+              size="small"
+            />
+          </View>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="skip-previous"
+              label="Préc."
+              onPress={() => handleCommand(() => api.previous(), 'previous')}
+              loading={loading === 'previous'}
+              size="small"
+            />
+            <ControlButton
+              icon="skip-next"
+              label="Suiv."
+              onPress={() => handleCommand(() => api.next(), 'next')}
+              loading={loading === 'next'}
+              size="small"
+            />
+          </View>
         </View>
 
         {/* Navigation temporelle */}
         <View style={styles.section}>
-
+          <Text style={styles.sectionTitle}>⏱️ Navigation temporelle</Text>
+          <View style={styles.timeRow}>
+            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#FF9800')}
+            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#FF9800')}
+          </View>
+          <View style={styles.timeRow}>
+            {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#FFC107')}
+            {renderSmallButton('replay-10', '-10s', () => api.rewind10Sec(), 'rewind_10', '#FFC107')}
+            {renderSmallButton('forward-10', '+10s', () => api.forward10Sec(), 'forward_10', '#FFC107')}
+            {renderSmallButton('forward-10', '+60s', () => api.forward60Sec(), 'forward_60', '#FFC107')}
+          </View>
         </View>
 
         {/* Volume */}
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🔊 Volume</Text>
+          <View style={styles.volumeControls}>
+            <TouchableOpacity
+              style={styles.volumeButton}
+              onPress={handleVolumeDown}
+              disabled={loading === 'volume_down'}
+            >
+              <MaterialIcons name="volume-down" size={32} color="#2196F3" />
+            </TouchableOpacity>
+            
+            <View style={styles.volumeDisplay}>
+              <Text style={styles.volumeText}>{volume}%</Text>
+              <View style={styles.volumeBar}>
+                <View style={[styles.volumeFill, { width: `${volume}%` }]} />
+              </View>
+            </View>
 
+            <TouchableOpacity
+              style={styles.volumeButton}
+              onPress={handleVolumeUp}
+              disabled={loading === 'volume_up'}
+            >
+              <MaterialIcons name="volume-up" size={32} color="#2196F3" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.muteRow}>
+            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
+          </View>
         </View>
 
         {/* Fonctions spéciales */}
@@ -445,12 +516,12 @@ const styles = StyleSheet.create({
   },
   dpadButton: {
     backgroundColor: '#2196F3',
-    borderRadius: 12,
-    width: 85,
-    height: 85,
+    borderRadius: 8,
+    width: 70,
+    height: 70,
     alignItems: 'center',
     justifyContent: 'center',
-    margin: 6,
+    margin: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -464,9 +535,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
   },
   dpadSpacer: {
-    width: 85,
-    height: 85,
-    margin: 6,
+    width: 70,
+    height: 70,
+    margin: 4,
   },
   volumeControls: {
     flexDirection: 'row',
