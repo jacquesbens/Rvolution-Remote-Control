@@ -230,7 +230,46 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Contrôles de lecture */}
         <View style={styles.section}>
-
+          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="play-arrow"
+              label="Play"
+              onPress={() => handleCommand(() => api.play(), 'play')}
+              loading={loading === 'play'}
+              size="small"
+            />
+            <ControlButton
+              icon="pause"
+              label="Pause"
+              onPress={() => handleCommand(() => api.pause(), 'pause')}
+              loading={loading === 'pause'}
+              size="small"
+            />
+            <ControlButton
+              icon="stop"
+              label="Stop"
+              onPress={() => handleCommand(() => api.stop(), 'stop')}
+              loading={loading === 'stop'}
+              size="small"
+            />
+          </View>
+          <View style={styles.playbackRow}>
+            <ControlButton
+              icon="skip-previous"
+              label="Préc."
+              onPress={() => handleCommand(() => api.previous(), 'previous')}
+              loading={loading === 'previous'}
+              size="small"
+            />
+            <ControlButton
+              icon="skip-next"
+              label="Suiv."
+              onPress={() => handleCommand(() => api.next(), 'next')}
+              loading={loading === 'next'}
+              size="small"
+            />
+          </View>
         </View>
 
         {/* Navigation temporelle */}
