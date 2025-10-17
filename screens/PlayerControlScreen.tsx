@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -14,8 +14,6 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import ControlButton from '../components/ControlButton';
 import { RvolutionPlayerAPI } from '../services/playerAPI';
-import { PlayerStatus } from '../types';
-import Slider from '@react-native-community/slider';
 
 type PlayerControlScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -31,27 +29,8 @@ interface Props {
 export default function PlayerControlScreen({ navigation, route }: Props) {
   const { device } = route.params;
   const [api] = useState(() => new RvolutionPlayerAPI(device.ipAddress, device.port));
-  const [status, setStatus] = useState<PlayerStatus | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const [volume, setVolume] = useState(50);
-
-  useEffect(() => {
-    loadStatus();
-    const interval = setInterval(loadStatus, 3000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const loadStatus = async () => {
-    try {
-      const playerStatus = await api.getStatus();
-      if (playerStatus) {
-        setStatus(playerStatus);
-        setVolume(playerStatus.volume);
-      }
-    } catch (error) {
-      console.error('Error loading status:', error);
-    }
-  };
 
   const handleCommand = async (
     command: () => Promise<boolean>,
@@ -59,31 +38,29 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
   ) => {
     setLoading(commandName);
     try {
+      console.log(`🎮 Exécution de la commande: ${commandName}`);
       const success = await command();
       if (!success) {
         Alert.alert('Erreur', `Impossible d\'exécuter la commande: ${commandName}`);
       } else {
-        await loadStatus();
+        console.log(`✅ Commande ${commandName} exécutée avec succès`);
       }
     } catch (error) {
-      console.error(`Error executing ${commandName}:`, error);
+      console.error(`❌ Erreur lors de l\'exécution de ${commandName}:`, error);
       Alert.alert('Erreur', 'Une erreur est survenue');
     } finally {
       setLoading(null);
     }
   };
 
-  const handleVolumeChange = async (value: number) => {
-    setVolume(value);
+  const handleVolumeUp = () => {
+    setVolume(prev => Math.min(100, prev + 5));
+    handleCommand(() => api.volumeUp(), 'volume_up');
   };
 
-  const handleVolumeComplete = async (value: number) => {
-    try {
-      await api.setVolume(Math.round(value));
-      await loadStatus();
-    } catch (error) {
-      console.error('Error setting volume:', error);
-    }
+  const handleVolumeDown = () => {
+    setVolume(prev => Math.max(0, prev - 5));
+    handleCommand(() => api.volumeDown(), 'volume_down');
   };
 
   return (
@@ -104,33 +81,41 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.statusCard}>
-          <MaterialIcons name="speaker" size={60} color="#2196F3" />
-          <Text style={styles.statusTitle}>
-            {status?.isPlaying ? 'Lecture en cours' : 'En pause'}
-          </Text>
-          {status?.currentTrack && (
-            <Text style={styles.trackName}>{status.currentTrack}</Text>
-          )}
+          <MaterialIcons name="speaker" size={80} color="#2196F3" />
+          <Text style={styles.statusTitle}>R_VOLUTION</Text>
+          <Text style={styles.statusSubtitle}>Lecteur multimédia</Text>
         </View>
 
         <View style={styles.volumeContainer}>
-          <MaterialIcons name="volume-down" size={24} color="#666" />
-          <Slider
-            style={styles.volumeSlider}
-            minimumValue={0}
-            maximumValue={100}
-            value={volume}
-            onValueChange={handleVolumeChange}
-            onSlidingComplete={handleVolumeComplete}
-            minimumTrackTintColor="#2196F3"
-            maximumTrackTintColor="#BDBDBD"
-            thumbTintColor="#2196F3"
-          />
-          <MaterialIcons name="volume-up" size={24} color="#666" />
-          <Text style={styles.volumeText}>{Math.round(volume)}%</Text>
+          <Text style={styles.volumeLabel}>Volume</Text>
+          <View style={styles.volumeControls}>
+            <TouchableOpacity
+              style={styles.volumeButton}
+              onPress={handleVolumeDown}
+              disabled={loading === 'volume_down'}
+            >
+              <MaterialIcons name="volume-down" size={32} color="#2196F3" />
+            </TouchableOpacity>
+            
+            <View style={styles.volumeDisplay}>
+              <Text style={styles.volumeText}>{volume}%</Text>
+              <View style={styles.volumeBar}>
+                <View style={[styles.volumeFill, { width: `${volume}%` }]} />
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={styles.volumeButton}
+              onPress={handleVolumeUp}
+              disabled={loading === 'volume_up'}
+            >
+              <MaterialIcons name="volume-up" size={32} color="#2196F3" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.controlsContainer}>
+          <Text style={styles.sectionTitle}>Contrôles de lecture</Text>
           <View style={styles.mainControls}>
             <ControlButton
               icon="play-arrow"
@@ -152,6 +137,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
             />
           </View>
 
+          <Text style={styles.sectionTitle}>Navigation</Text>
           <View style={styles.navigationControls}>
             <ControlButton
               icon="skip-previous"
@@ -168,6 +154,25 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               size="small"
             />
           </View>
+
+          <View style={styles.extraControls}>
+            <TouchableOpacity
+              style={styles.muteButton}
+              onPress={() => handleCommand(() => api.mute(), 'mute')}
+              disabled={loading === 'mute'}
+            >
+              <MaterialIcons name="volume-off" size={24} color="#fff" />
+              <Text style={styles.muteButtonText}>Muet</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.infoBox}>
+          <MaterialIcons name="info" size={20} color="#2196F3" />
+          <Text style={styles.infoText}>
+            Les commandes sont envoyées via codes IR au format:{'\n'}
+            http://{device.ipAddress}/cgi-bin/do?cmd=ir_code&ir_code=...
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -225,23 +230,20 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   statusTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
     marginTop: 16,
   },
-  trackName: {
+  statusSubtitle: {
     fontSize: 16,
     color: '#666',
-    marginTop: 8,
-    textAlign: 'center',
+    marginTop: 4,
   },
   volumeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 20,
     marginBottom: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -249,30 +251,102 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  volumeSlider: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  volumeText: {
-    fontSize: 16,
+  volumeLabel: {
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#333',
-    marginLeft: 12,
-    minWidth: 50,
-    textAlign: 'right',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  volumeControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  volumeButton: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: '#E3F2FD',
+  },
+  volumeDisplay: {
+    flex: 1,
+    marginHorizontal: 16,
+    alignItems: 'center',
+  },
+  volumeText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#2196F3',
+    marginBottom: 8,
+  },
+  volumeBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  volumeFill: {
+    height: '100%',
+    backgroundColor: '#2196F3',
   },
   controlsContainer: {
     alignItems: 'center',
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 8,
+    marginBottom: 16,
   },
   mainControls: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
-    marginBottom: 16,
+    marginBottom: 24,
   },
   navigationControls: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
+    marginBottom: 24,
+  },
+  extraControls: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 24,
+  },
+  muteButton: {
+    backgroundColor: '#FF5722',
+    borderRadius: 8,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  muteButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
+  },
+  infoBox: {
+    flexDirection: 'row',
+    backgroundColor: '#E3F2FD',
+    borderRadius: 8,
+    padding: 16,
+    marginTop: 8,
+  },
+  infoText: {
+    flex: 1,
+    fontSize: 12,
+    color: '#1976D2',
+    marginLeft: 12,
+    lineHeight: 18,
   },
 });

@@ -2,6 +2,19 @@ import { PlayerStatus } from '../types';
 
 const HTTP_TIMEOUT = 5000;
 
+// Codes IR pour les commandes R_VOLUTION
+// Format: http://<player-ip-address>/cgi-bin/do?cmd=ir_code&ir_code=<CODE>
+const IR_CODES = {
+  PLAY: 'F10E4040',        // Code IR pour Play
+  PAUSE: 'F10E4041',       // Code IR pour Pause
+  STOP: 'F10E4042',        // Code IR pour Stop
+  NEXT: 'F10E4043',        // Code IR pour Next
+  PREVIOUS: 'F10E4044',    // Code IR pour Previous
+  VOLUME_UP: 'F10E4045',   // Code IR pour Volume +
+  VOLUME_DOWN: 'F10E4046', // Code IR pour Volume -
+  MUTE: 'F10E4047',        // Code IR pour Mute
+};
+
 export class RvolutionPlayerAPI {
   private baseUrl: string;
 
@@ -26,10 +39,28 @@ export class RvolutionPlayerAPI {
     }
   }
 
+  private async sendIRCommand(irCode: string): Promise<boolean> {
+    try {
+      const url = `${this.baseUrl}/cgi-bin/do?cmd=ir_code&ir_code=${irCode}`;
+      console.log(`📡 Envoi commande IR: ${url}`);
+      
+      const response = await this.fetchWithTimeout(url, {
+        method: 'GET',
+      });
+      
+      console.log(`✅ Réponse: ${response.status}`);
+      return response.ok;
+    } catch (error) {
+      console.error('❌ Erreur commande IR:', error);
+      return false;
+    }
+  }
+
   async checkConnection(): Promise<boolean> {
     try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/status`);
-      return response.ok;
+      // Tester la connexion avec une commande simple
+      const response = await this.fetchWithTimeout(`${this.baseUrl}/cgi-bin/do?cmd=ir_code&ir_code=TEST`);
+      return response.status !== 404; // Si le serveur répond (même avec une erreur), il est accessible
     } catch (error) {
       console.error('Connection check failed:', error);
       return false;
@@ -37,92 +68,47 @@ export class RvolutionPlayerAPI {
   }
 
   async play(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/play`, {
-        method: 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Play command failed:', error);
-      return false;
-    }
+    return this.sendIRCommand(IR_CODES.PLAY);
   }
 
   async pause(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/pause`, {
-        method: 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Pause command failed:', error);
-      return false;
-    }
+    return this.sendIRCommand(IR_CODES.PAUSE);
   }
 
   async stop(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/stop`, {
-        method: 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Stop command failed:', error);
-      return false;
-    }
+    return this.sendIRCommand(IR_CODES.STOP);
   }
 
   async next(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/next`, {
-        method: 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Next command failed:', error);
-      return false;
-    }
+    return this.sendIRCommand(IR_CODES.NEXT);
   }
 
   async previous(): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/previous`, {
-        method: 'POST',
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Previous command failed:', error);
-      return false;
-    }
+    return this.sendIRCommand(IR_CODES.PREVIOUS);
   }
 
+  async volumeUp(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.VOLUME_UP);
+  }
+
+  async volumeDown(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.VOLUME_DOWN);
+  }
+
+  async mute(): Promise<boolean> {
+    return this.sendIRCommand(IR_CODES.MUTE);
+  }
+
+  // Note: Le contrôle du volume par valeur exacte n'est pas disponible avec les codes IR
+  // On utilise volumeUp/volumeDown à la place
   async setVolume(volume: number): Promise<boolean> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/volume`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ volume: Math.max(0, Math.min(100, volume)) }),
-      });
-      return response.ok;
-    } catch (error) {
-      console.error('Set volume failed:', error);
-      return false;
-    }
+    console.warn('setVolume: Le contrôle du volume par valeur exacte n\'est pas disponible avec les codes IR');
+    return false;
   }
 
+  // Note: La récupération du statut n'est pas disponible avec cette API
   async getStatus(): Promise<PlayerStatus | null> {
-    try {
-      const response = await this.fetchWithTimeout(`${this.baseUrl}/status`);
-      if (response.ok) {
-        const data = await response.json();
-        return data as PlayerStatus;
-      }
-      return null;
-    } catch (error) {
-      console.error('Get status failed:', error);
-      return null;
-    }
+    console.warn('getStatus: La récupération du statut n\'est pas disponible avec cette API');
+    return null;
   }
 }

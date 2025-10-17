@@ -8,15 +8,15 @@
 
 Depuis un navigateur web sur le même réseau, essayez d'accéder à :
 ```
-http://[IP_DE_VOTRE_APPAREIL]/status
+http://[IP_DE_VOTRE_APPAREIL]/cgi-bin/do?cmd=ir_code&ir_code=F10E4040
 ```
 
 Par exemple :
 ```
-http://192.168.1.100/status
+http://192.168.1.100/cgi-bin/do?cmd=ir_code&ir_code=F10E4040
 ```
 
-L'appareil devrait répondre avec un JSON contenant le statut du lecteur.
+L'appareil devrait répondre (même avec une erreur si le code IR n'est pas valide).
 
 #### 2. **Vérifier le réseau Wi-Fi**
 
@@ -48,15 +48,21 @@ Si votre appareil R_VOLUTION utilise un port différent, vous devrez l'ajouter m
 
 #### 5. **Vérifier les endpoints de l'API**
 
-L'application s'attend à ce que l'appareil R_VOLUTION expose les endpoints suivants :
+L'application utilise le format CGI avec codes IR :
 
-- `GET /status` - Obtenir le statut du lecteur
-- `POST /play` - Démarrer la lecture
-- `POST /pause` - Mettre en pause
-- `POST /stop` - Arrêter la lecture
-- `POST /next` - Piste suivante
-- `POST /previous` - Piste précédente
-- `POST /volume` - Définir le volume (body: `{"volume": 50}`)
+Format : `http://<player-ip-address>/cgi-bin/do?cmd=ir_code&ir_code=<CODE>`
+
+Codes IR utilisés :
+- `F10E4040` - Play
+- `F10E4041` - Pause
+- `F10E4042` - Stop
+- `F10E4043` - Next
+- `F10E4044` - Previous
+- `F10E4045` - Volume Up
+- `F10E4046` - Volume Down
+- `F10E4047` - Mute
+
+**Note** : Ces codes IR sont des exemples. Vérifiez les codes IR réels de votre appareil R_VOLUTION.
 
 ### Solutions :
 
@@ -78,7 +84,7 @@ Ouvrez la console de développement pour voir les logs détaillés :
 
 Depuis un terminal sur le même réseau :
 ```bash
-curl http://192.168.1.100/status
+curl "http://192.168.1.100/cgi-bin/do?cmd=ir_code&ir_code=F10E4040"
 ```
 
 Si cette commande ne fonctionne pas, le problème vient de l'appareil R_VOLUTION ou du réseau.
@@ -91,22 +97,15 @@ Si cette commande ne fonctionne pas, le problème vient de l'appareil R_VOLUTION
    - Appuyez sur l'appareil dans la liste
    - Vérifiez le statut (point vert = en ligne)
 
-2. **Vérifier les endpoints de contrôle**
-   - Testez manuellement avec curl :
-   ```bash
-   curl -X POST http://192.168.1.100/play
-   curl -X POST http://192.168.1.100/pause
-   ```
+2. **Vérifier les codes IR**
+   - Les codes IR utilisés dans l'application sont des exemples
+   - Consultez la documentation de votre appareil R_VOLUTION pour les codes IR corrects
+   - Modifiez les codes dans `services/playerAPI.ts` si nécessaire
 
-3. **Vérifier le format de la réponse**
-   - L'endpoint `/status` doit retourner un JSON valide
-   - Exemple de réponse attendue :
-   ```json
-   {
-     "isPlaying": true,
-     "volume": 50,
-     "currentTrack": "Nom de la piste"
-   }
+3. **Tester manuellement les commandes**
+   - Testez avec curl :
+   ```bash
+   curl "http://192.168.1.100/cgi-bin/do?cmd=ir_code&ir_code=F10E4040"
    ```
 
 ## Problème : Le scan est très lent
@@ -120,9 +119,27 @@ Pour accélérer :
 1. Utilisez l'ajout manuel si vous connaissez l'IP
 2. Le scan s'arrête dès qu'il trouve un appareil
 
+## Configuration des codes IR
+
+Si les codes IR par défaut ne fonctionnent pas, vous devez les modifier dans le fichier `services/playerAPI.ts` :
+
+```typescript
+const IR_CODES = {
+  PLAY: 'VOTRE_CODE_PLAY',
+  PAUSE: 'VOTRE_CODE_PAUSE',
+  STOP: 'VOTRE_CODE_STOP',
+  NEXT: 'VOTRE_CODE_NEXT',
+  PREVIOUS: 'VOTRE_CODE_PREVIOUS',
+  VOLUME_UP: 'VOTRE_CODE_VOLUME_UP',
+  VOLUME_DOWN: 'VOTRE_CODE_VOLUME_DOWN',
+  MUTE: 'VOTRE_CODE_MUTE',
+};
+```
+
 ## Support
 
 Pour plus d'aide, vérifiez :
 1. La documentation de votre appareil R_VOLUTION
 2. Que le firmware de l'appareil est à jour
-3. Que l'API HTTP est activée sur l'appareil
+3. Que l'API CGI est activée sur l'appareil
+4. Les codes IR corrects pour votre modèle

@@ -34,24 +34,17 @@ const checkRvolutionDevice = async (
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const response = await fetch(`http://${ipAddress}:${port}/status`, {
+    // Tester avec l'endpoint CGI
+    const response = await fetch(`http://${ipAddress}:${port}/cgi-bin/do?cmd=ir_code&ir_code=TEST`, {
       method: 'GET',
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
 
-    if (response.ok) {
-      let deviceName = `R_VOLUTION (${ipAddress})`;
-      
-      try {
-        const data = await response.json();
-        if (data.name) {
-          deviceName = data.name;
-        }
-      } catch (e) {
-        // Si pas de JSON, utiliser le nom par défaut
-      }
+    // Si le serveur répond (même avec une erreur), c'est un appareil R_VOLUTION
+    if (response.status !== 404) {
+      const deviceName = `R_VOLUTION (${ipAddress})`;
 
       return {
         id: `${ipAddress}:${port}`,
@@ -62,7 +55,7 @@ const checkRvolutionDevice = async (
         lastSeen: Date.now(),
       };
     }
-  } catch (error) {
+  } catch {
     // Appareil non trouvé ou timeout
   }
   
@@ -189,14 +182,14 @@ export const checkDeviceAvailability = async (
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-    const response = await fetch(`http://${ipAddress}:${port}/status`, {
+    const response = await fetch(`http://${ipAddress}:${port}/cgi-bin/do?cmd=ir_code&ir_code=TEST`, {
       method: 'GET',
       signal: controller.signal,
     });
 
     clearTimeout(timeoutId);
-    return response.ok;
-  } catch (error) {
+    return response.status !== 404;
+  } catch {
     return false;
   }
 };
