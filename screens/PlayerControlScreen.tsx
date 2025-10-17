@@ -90,6 +90,22 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
     </TouchableOpacity>
   );
 
+  const renderNumpadButton = (
+    icon: keyof typeof MaterialIcons.glyphMap,
+    label: string,
+    command: () => Promise<boolean>,
+    commandName: string
+  ) => (
+    <TouchableOpacity
+      style={styles.numberButton}
+      onPress={() => handleCommand(command, commandName)}
+      disabled={loading === commandName}
+    >
+      <MaterialIcons name={icon} size={32} color="#fff" />
+      <Text style={styles.numpadButtonText}>{label}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
@@ -137,9 +153,9 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               {renderNumberButton(9)}
             </View>
             <View style={styles.numberRow}>
-              {renderSmallButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle', '#9C27B0')}
+              {renderNumpadButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle')}
               {renderNumberButton(0)}
-              {renderSmallButton('audiotrack', 'Audio', () => api.audio(), 'audio', '#9C27B0')}
+              {renderNumpadButton('audiotrack', 'Audio', () => api.audio(), 'audio')}
             </View>
           </View>
         </View>
@@ -475,6 +491,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
+  },
+  numpadButtonText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginTop: 4,
+    textAlign: 'center',
   },
   dpadContainer: {
     alignItems: 'center',
