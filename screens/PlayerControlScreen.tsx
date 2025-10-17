@@ -150,7 +150,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <View style={styles.dpadContainer}>
             <View style={styles.dpadRow}>
               <TouchableOpacity
-                style={styles.dpadButton}
+                style={[styles.dpadButton, styles.auxiliaryButton]}
                 onPress={() => handleCommand(() => api.home(), 'home')}
                 disabled={loading === 'home'}
               >
@@ -190,7 +190,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
             </View>
             <View style={styles.dpadRow}>
               <TouchableOpacity
-                style={styles.dpadButton}
+                style={[styles.dpadButton, styles.auxiliaryButton]}
                 onPress={() => handleCommand(() => api.menu(), 'menu')}
                 disabled={loading === 'menu'}
               >
@@ -204,7 +204,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
                 <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
               </TouchableOpacity>
               <TouchableOpacity
-                style={styles.dpadButton}
+                style={[styles.dpadButton, styles.auxiliaryButton]}
                 onPress={() => handleCommand(() => api.return(), 'return')}
                 disabled={loading === 'return'}
               >
@@ -530,6 +530,9 @@ const styles = StyleSheet.create({
   },
   dpadCenter: {
     backgroundColor: '#1976D2',
+  },
+  auxiliaryButton: {
+    marginHorizontal: 8,
   },
   dpadSpacer: {
     width: 70,
