@@ -163,7 +163,13 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               >
                 <MaterialIcons name="keyboard-arrow-up" size={40} color="#fff" />
               </TouchableOpacity>
-              <View style={styles.dpadSpacer} />
+              <TouchableOpacity
+                style={[styles.dpadButton, styles.auxiliaryButton]}
+                onPress={() => handleCommand(() => api.return(), 'return')}
+                disabled={loading === 'return'}
+              >
+                <MaterialIcons name="arrow-back" size={32} color="#fff" />
+              </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
               <TouchableOpacity
@@ -203,13 +209,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               >
                 <MaterialIcons name="keyboard-arrow-down" size={40} color="#fff" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.return(), 'return')}
-                disabled={loading === 'return'}
-              >
-                <MaterialIcons name="arrow-back" size={32} color="#fff" />
-              </TouchableOpacity>
+              <View style={styles.dpadSpacer} />
             </View>
           </View>
         </View>
