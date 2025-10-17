@@ -137,9 +137,9 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               {renderNumberButton(9)}
             </View>
             <View style={styles.numberRow}>
-              <View style={styles.numberButton} />
+              {renderSmallButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle', '#9C27B0')}
               {renderNumberButton(0)}
-              <View style={styles.numberButton} />
+              {renderSmallButton('audiotrack', 'Audio', () => api.audio(), 'audio', '#9C27B0')}
             </View>
           </View>
         </View>
@@ -310,8 +310,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
           <View style={styles.specialRow}>
-            {renderSmallButton('audiotrack', 'Audio', () => api.audio(), 'audio', '#9C27B0')}
-            {renderSmallButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle', '#9C27B0')}
             {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#9C27B0')}
             {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#9C27B0')}
           </View>
