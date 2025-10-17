@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   RefreshControl,
   Alert,
+  Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -14,8 +16,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import DeviceCard from '../components/DeviceCard';
 import { RvolutionDevice } from '../types';
-import { loadDevices, removeDevice, saveDevices } from '../utils/storage';
-import { checkDeviceAvailability } from '../services/networkDiscovery';
+import { loadDevices, removeDevice, saveDevices, addDevice } from '../utils/storage';
+import { checkDeviceAvailability, scanNetwork } from '../services/networkDiscovery';
 
 type DevicesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Devices'>;
 
@@ -26,6 +28,9 @@ interface Props {
 export default function DevicesScreen({ navigation }: Props) {
   const [devices, setDevices] = useState<RvolutionDevice[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanProgress, setScanProgress] = useState(0);
+  const [foundDevices, setFoundDevices] = useState(0);
 
   const loadDevicesList = useCallback(async () => {
     try {
@@ -71,6 +76,46 @@ export default function DevicesScreen({ navigation }: Props) {
     setRefreshing(false);
   };
 
+  const handleScanNetwork = async () => {
+    setScanning(true);
+    setScanProgress(0);
+    setFoundDevices(0);
+
+    try {
+      const discoveredDevices = await scanNetwork(
+        (device) => {
+          // Callback appelé quand un appareil est trouvé
+          setFoundDevices(prev => prev + 1);
+          addDevice(device);
+        },
+        (progress) => {
+          // Callback de progression
+          setScanProgress(progress);
+        }
+      );
+
+      setScanning(false);
+      
+      if (discoveredDevices.length > 0) {
+        Alert.alert(
+          'Scan terminé',
+          `${discoveredDevices.length} appareil(s) R_VOLUTION trouvé(s)`,
+          [{ text: 'OK', onPress: () => loadDevicesList() }]
+        );
+      } else {
+        Alert.alert(
+          'Scan terminé',
+          'Aucun appareil R_VOLUTION trouvé sur le réseau.\n\nAssurez-vous que vos appareils sont allumés et connectés au même réseau Wi-Fi.',
+          [{ text: 'OK' }]
+        );
+      }
+    } catch (error) {
+      console.error('Error scanning network:', error);
+      setScanning(false);
+      Alert.alert('Erreur', 'Une erreur est survenue lors du scan du réseau');
+    }
+  };
+
   const handleDeleteDevice = (deviceId: string) => {
     Alert.alert(
       'Supprimer l\'appareil',
@@ -104,12 +149,21 @@ export default function DevicesScreen({ navigation }: Props) {
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
         <Text style={styles.title}>Mes Appareils</Text>
-        <TouchableOpacity
-          style={styles.addButton}
-          onPress={() => navigation.navigate('AddDevice')}
-        >
-          <MaterialIcons name="add" size={28} color="#fff" />
-        </TouchableOpacity>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={styles.scanButton}
+            onPress={handleScanNetwork}
+            disabled={scanning}
+          >
+            <MaterialIcons name="search" size={24} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={() => navigation.navigate('AddDevice')}
+          >
+            <MaterialIcons name="add" size={28} color="#fff" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {devices.length === 0 ? (
@@ -117,7 +171,10 @@ export default function DevicesScreen({ navigation }: Props) {
           <MaterialIcons name="speaker" size={80} color="#BDBDBD" />
           <Text style={styles.emptyText}>Aucun appareil</Text>
           <Text style={styles.emptySubtext}>
-            Appuyez sur + pour ajouter un appareil
+            Appuyez sur 🔍 pour scanner le réseau
+          </Text>
+          <Text style={styles.emptySubtext}>
+            ou sur + pour ajouter manuellement
           </Text>
         </View>
       ) : (
@@ -137,6 +194,45 @@ export default function DevicesScreen({ navigation }: Props) {
           }
         />
       )}
+
+      {/* Modal de scan */}
+      <Modal
+        visible={scanning}
+        transparent
+        animationType="fade"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <MaterialIcons name="search" size={60} color="#2196F3" />
+            <Text style={styles.modalTitle}>Scan du réseau en cours...</Text>
+            <Text style={styles.modalSubtitle}>
+              Recherche d\'appareils R_VOLUTION
+            </Text>
+            
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
+                <View 
+                  style={[
+                    styles.progressFill,
+                    { width: `${scanProgress * 100}%` }
+                  ]} 
+                />
+              </View>
+              <Text style={styles.progressText}>
+                {Math.round(scanProgress * 100)}%
+              </Text>
+            </View>
+
+            {foundDevices > 0 && (
+              <Text style={styles.foundText}>
+                {foundDevices} appareil(s) trouvé(s)
+              </Text>
+            )}
+
+            <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -160,6 +256,23 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
+  },
+  headerButtons: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  scanButton: {
+    backgroundColor: '#4CAF50',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   addButton: {
     backgroundColor: '#2196F3',
@@ -194,5 +307,63 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 8,
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 32,
+    alignItems: 'center',
+    width: '80%',
+    maxWidth: 400,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  progressContainer: {
+    width: '100%',
+    marginTop: 24,
+    marginBottom: 16,
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#4CAF50',
+  },
+  progressText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  foundText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginTop: 8,
+  },
+  spinner: {
+    marginTop: 16,
   },
 });
