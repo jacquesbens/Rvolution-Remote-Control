@@ -239,34 +239,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Volume */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔊 Volume</Text>
-          <View style={styles.volumeControls}>
-            <TouchableOpacity
-              style={styles.volumeButton}
-              onPress={handleVolumeDown}
-              disabled={loading === 'volume_down'}
-            >
-              <MaterialIcons name="volume-down" size={32} color="#2196F3" />
-            </TouchableOpacity>
-            
-            <View style={styles.volumeDisplay}>
-              <Text style={styles.volumeText}>{volume}%</Text>
-              <View style={styles.volumeBar}>
-                <View style={[styles.volumeFill, { width: `${volume}%` }]} />
-              </View>
-            </View>
 
-            <TouchableOpacity
-              style={styles.volumeButton}
-              onPress={handleVolumeUp}
-              disabled={loading === 'volume_up'}
-            >
-              <MaterialIcons name="volume-up" size={32} color="#2196F3" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.muteRow}>
-            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
-          </View>
         </View>
 
         {/* Fonctions spéciales */}
