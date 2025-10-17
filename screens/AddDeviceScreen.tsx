@@ -25,7 +25,6 @@ interface Props {
 
 export default function AddDeviceScreen({ navigation }: Props) {
   const [ipAddress, setIpAddress] = useState('');
-  const [port, setPort] = useState('80');
   const [deviceName, setDeviceName] = useState('');
   const [loading, setLoading] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
@@ -52,11 +51,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
       return;
     }
 
-    const portNumber = parseInt(port, 10);
-    if (isNaN(portNumber) || portNumber < 1 || portNumber > 65535) {
-      Alert.alert('Erreur', 'Port invalide (1-65535)');
-      return;
-    }
+    const portNumber = 80; // Port par défaut
 
     setLoading(true);
     setDebugInfo(`Tentative de connexion à http://${ipAddress}:${portNumber}/status...`);
@@ -87,7 +82,6 @@ export default function AddDeviceScreen({ navigation }: Props) {
           '• L\'appareil est allumé\n' +
           '• L\'adresse IP est correcte\n' +
           '• L\'appareil est sur le même réseau Wi-Fi\n' +
-          `• Le port ${portNumber} est accessible\n` +
           '• L\'endpoint /status existe et répond',
           [
             { text: 'Réessayer', onPress: handleAddDevice },
@@ -151,16 +145,6 @@ export default function AddDeviceScreen({ navigation }: Props) {
             editable={!loading}
           />
 
-          <Text style={styles.label}>Port</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="80"
-            value={port}
-            onChangeText={setPort}
-            keyboardType="numeric"
-            editable={!loading}
-          />
-
           {debugInfo ? (
             <View style={styles.debugBox}>
               <Text style={styles.debugText}>{debugInfo}</Text>
@@ -185,7 +169,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={20} color="#2196F3" />
             <Text style={styles.infoText}>
-              L&apos;application va tenter de se connecter à http://{ipAddress || '...'}{port ? `:${port}` : ':80'}/status
+              L&apos;application va tenter de se connecter à http://{ipAddress || '...'}/status
               {'\n\n'}
               Assurez-vous que votre appareil R_VOLUTION répond à cette URL.
             </Text>
