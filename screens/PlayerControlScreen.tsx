@@ -220,14 +220,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           </View>
         </View>
 
-        {/* Menu et navigation - Info uniquement */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📱 Info</Text>
-          <View style={styles.menuRow}>
-            {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
-          </View>
-        </View>
-
         {/* Contrôles de lecture */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>▶️ Lecture</Text>
