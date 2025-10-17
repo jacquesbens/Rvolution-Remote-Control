@@ -87,7 +87,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           '• L\'appareil est allumé\n' +
           '• L\'adresse IP est correcte\n' +
           '• L\'appareil est sur le même réseau Wi-Fi\n' +
-          '• Le port ${portNumber} est accessible\n' +
+          `• Le port ${portNumber} est accessible\n` +
           '• L\'endpoint /status existe et répond',
           [
             { text: 'Réessayer', onPress: handleAddDevice },
@@ -130,7 +130,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
             <MaterialIcons name="speaker" size={80} color="#2196F3" />
           </View>
 
-          <Text style={styles.label}>Nom de l\'appareil (optionnel)</Text>
+          <Text style={styles.label}>Nom de l&apos;appareil (optionnel)</Text>
           <TextInput
             style={styles.input}
             placeholder="R_VOLUTION Salon"
@@ -145,7 +145,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
             placeholder="192.168.1.100"
             value={ipAddress}
             onChangeText={setIpAddress}
-            keyboardType="numeric"
+            keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'default'}
             autoCapitalize="none"
             autoCorrect={false}
             editable={!loading}
@@ -177,7 +177,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
             ) : (
               <>
                 <MaterialIcons name="add" size={24} color="#fff" />
-                <Text style={styles.addButtonText}>Ajouter l\'appareil</Text>
+                <Text style={styles.addButtonText}>Ajouter l&apos;appareil</Text>
               </>
             )}
           </TouchableOpacity>
@@ -185,7 +185,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={20} color="#2196F3" />
             <Text style={styles.infoText}>
-              L\'application va tenter de se connecter à http://{ipAddress || '...'}{port ? `:${port}` : ':80'}/status
+              L&apos;application va tenter de se connecter à http://{ipAddress || '...'}{port ? `:${port}` : ':80'}/status
               {'\n\n'}
               Assurez-vous que votre appareil R_VOLUTION répond à cette URL.
             </Text>
