@@ -262,20 +262,15 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               size="small"
             />
           </View>
-        </View>
-
-        {/* Navigation temporelle */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>⏱️ Navigation temporelle</Text>
-          <View style={styles.timeRow}>
-            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#FF9800')}
-            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#FF9800')}
+          <View style={styles.playbackRow}>
+            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#2196F3')}
+            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#2196F3')}
           </View>
-          <View style={styles.timeRow}>
-            {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#FFC107')}
-            {renderSmallButton('replay-10', '-10s', () => api.rewind10Sec(), 'rewind_10', '#FFC107')}
-            {renderSmallButton('forward-10', '+10s', () => api.forward10Sec(), 'forward_10', '#FFC107')}
-            {renderSmallButton('forward-10', '+60s', () => api.forward60Sec(), 'forward_60', '#FFC107')}
+          <View style={styles.playbackRow}>
+            {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#2196F3')}
+            {renderSmallButton('replay-10', '-10s', () => api.rewind10Sec(), 'rewind_10', '#2196F3')}
+            {renderSmallButton('forward-10', '+10s', () => api.forward10Sec(), 'forward_10', '#2196F3')}
+            {renderSmallButton('forward-10', '+60s', () => api.forward60Sec(), 'forward_60', '#2196F3')}
           </View>
         </View>
 
