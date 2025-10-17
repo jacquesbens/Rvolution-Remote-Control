@@ -12,7 +12,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
-import ControlButton from '../components/ControlButton';
 import { RvolutionPlayerAPI } from '../services/playerAPI';
 
 type PlayerControlScreenNavigationProp = NativeStackNavigationProp<
@@ -235,17 +234,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Navigation temporelle */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>⏱️ Navigation temporelle</Text>
-          <View style={styles.timeRow}>
-            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#FF9800')}
-            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#FF9800')}
-          </View>
-          <View style={styles.timeRow}>
-            {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#FFC107')}
-            {renderSmallButton('replay-10', '-10s', () => api.rewind10Sec(), 'rewind_10', '#FFC107')}
-            {renderSmallButton('forward-10', '+10s', () => api.forward10Sec(), 'forward_10', '#FFC107')}
-            {renderSmallButton('forward-10', '+60s', () => api.forward60Sec(), 'forward_60', '#FFC107')}
-          </View>
+
         </View>
 
         {/* Volume */}
