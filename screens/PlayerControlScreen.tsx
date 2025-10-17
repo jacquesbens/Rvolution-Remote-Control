@@ -41,12 +41,12 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       console.log(`🎮 Exécution de la commande: ${commandName}`);
       const success = await command();
       if (!success) {
-        Alert.alert('Erreur', `Impossible d'exécuter la commande: ${commandName}`);
+        Alert.alert('Erreur', `Impossible d\'exécuter la commande: ${commandName}`);
       } else {
         console.log(`✅ Commande ${commandName} exécutée avec succès`);
       }
     } catch (error) {
-      console.error(`❌ Erreur lors de l'exécution de ${commandName}:`, error);
+      console.error(`❌ Erreur lors de l\'exécution de ${commandName}:`, error);
       Alert.alert('Erreur', 'Une erreur est survenue');
     } finally {
       setLoading(null);
@@ -346,14 +346,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
             {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>
         </View>
-
-        <View style={styles.infoBox}>
-          <MaterialIcons name="info" size={20} color="#2196F3" />
-          <Text style={styles.infoText}>
-            Toutes les commandes sont envoyées via codes IR{'\n'}
-            Format: http://{device.ipAddress}/cgi-bin/do?cmd=ir_code&ir_code=...
-          </Text>
-        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -418,20 +410,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
   },
-  menuRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    flexWrap: 'wrap',
-  },
   playbackRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    flexWrap: 'wrap',
-    marginBottom: 8,
-  },
-  timeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
     flexWrap: 'wrap',
     marginBottom: 8,
   },
@@ -526,11 +507,6 @@ const styles = StyleSheet.create({
   auxiliaryButton: {
     marginHorizontal: 8,
   },
-  dpadSpacer: {
-    width: 85,
-    height: 85,
-    margin: 6,
-  },
   volumeControls: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -567,19 +543,5 @@ const styles = StyleSheet.create({
   muteRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-  },
-  infoBox: {
-    flexDirection: 'row',
-    backgroundColor: '#E3F2FD',
-    borderRadius: 8,
-    padding: 16,
-    marginTop: 8,
-  },
-  infoText: {
-    flex: 1,
-    fontSize: 12,
-    color: '#1976D2',
-    marginLeft: 12,
-    lineHeight: 18,
   },
 });
