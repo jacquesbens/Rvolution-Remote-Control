@@ -25,6 +25,15 @@ for (const [dep, version] of Object.entries(requiredDeps)) {
   }
 }
 
+// Vérifier la compatibilité des versions
+console.log('\n🔗 Vérification de la compatibilité:');
+const workletsVersion = packageJson.dependencies['react-native-worklets'];
+if (workletsVersion && workletsVersion.startsWith('0.4')) {
+  console.log('  ✅ react-native-worklets 0.4.x compatible avec Reanimated 4.1.x');
+} else {
+  console.log('  ⚠️  react-native-worklets devrait être en version 0.4.x pour Reanimated 4.1.x');
+}
+
 // Vérifier app.json
 console.log('\n📱 Vérification de app.json:');
 const appJsonPath = path.join(__dirname, '..', 'app.json');
