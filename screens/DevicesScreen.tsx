@@ -32,6 +32,9 @@ export default function DevicesScreen({ navigation }: Props) {
   const [scanProgress, setScanProgress] = useState(0);
   const [foundDevices, setFoundDevices] = useState(0);
   const [currentIP, setCurrentIP] = useState('');
+  const [discoveredDevices, setDiscoveredDevices] = useState<RvolutionDevice[]>([]);
+  const [showSelectionModal, setShowSelectionModal] = useState(false);
+  const [selectedDevices, setSelectedDevices] = useState<Set<string>>(new Set());
 
   const loadDevicesList = useCallback(async () => {
     try {
@@ -90,16 +93,19 @@ export default function DevicesScreen({ navigation }: Props) {
             setScanning(true);
             setScanProgress(0);
             setFoundDevices(0);
+            setDiscoveredDevices([]);
 
             try {
               console.log('🚀 Démarrage du scan réseau...');
               
-              const discoveredDevices = await scanNetwork(
+              const tempDiscoveredDevices: RvolutionDevice[] = [];
+              
+              const foundDevicesList = await scanNetwork(
                 (device) => {
                   // Callback appelé quand un appareil est trouvé
                   console.log('✅ Appareil découvert:', device.name, device.ipAddress);
                   setFoundDevices(prev => prev + 1);
-                  addDevice(device);
+                  tempDiscoveredDevices.push(device);
                 },
                 (progress) => {
                   // Callback de progression
@@ -112,14 +118,12 @@ export default function DevicesScreen({ navigation }: Props) {
               );
 
               setScanning(false);
-              await loadDevicesList();
               
-              if (discoveredDevices.length > 0) {
-                Alert.alert(
-                  'Scan terminé',
-                  `${discoveredDevices.length} appareil(s) R_VOLUTION trouvé(s)`,
-                  [{ text: 'OK' }]
-                );
+              if (foundDevicesList.length > 0) {
+                // Afficher le modal de sélection
+                setDiscoveredDevices(foundDevicesList);
+                setSelectedDevices(new Set(foundDevicesList.map(d => d.id)));
+                setShowSelectionModal(true);
               } else {
                 Alert.alert(
                   'Aucun appareil trouvé',
@@ -167,11 +171,51 @@ export default function DevicesScreen({ navigation }: Props) {
           onPress: () => {
             stopScan();
             setScanning(false);
-            loadDevicesList();
           }
         }
       ]
     );
+  };
+
+  const toggleDeviceSelection = (deviceId: string) => {
+    setSelectedDevices(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(deviceId)) {
+        newSet.delete(deviceId);
+      } else {
+        newSet.add(deviceId);
+      }
+      return newSet;
+    });
+  };
+
+  const handleAddSelectedDevices = async () => {
+    const devicesToAdd = discoveredDevices.filter(d => selectedDevices.has(d.id));
+    
+    if (devicesToAdd.length === 0) {
+      Alert.alert('Aucun appareil sélectionné', 'Veuillez sélectionner au moins un appareil à ajouter.');
+      return;
+    }
+
+    try {
+      for (const device of devicesToAdd) {
+        await addDevice(device);
+      }
+      
+      setShowSelectionModal(false);
+      setDiscoveredDevices([]);
+      setSelectedDevices(new Set());
+      await loadDevicesList();
+      
+      Alert.alert(
+        'Succès',
+        `${devicesToAdd.length} appareil(s) ajouté(s) avec succès`,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'ajout des appareils:', error);
+      Alert.alert('Erreur', 'Impossible d\'ajouter les appareils');
+    }
   };
 
   const handleEditDevice = (device: RvolutionDevice) => {
@@ -305,6 +349,83 @@ export default function DevicesScreen({ navigation }: Props) {
             </TouchableOpacity>
 
             <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal de sélection des appareils */}
+      <Modal
+        visible={showSelectionModal}
+        transparent
+        animationType="slide"
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.selectionModalContent}>
+            <View style={styles.selectionHeader}>
+              <MaterialIcons name="devices" size={40} color="#2196F3" />
+              <Text style={styles.selectionTitle}>
+                Appareils trouvés
+              </Text>
+              <Text style={styles.selectionSubtitle}>
+                Sélectionnez les appareils à ajouter
+              </Text>
+            </View>
+
+            <FlatList
+              data={discoveredDevices}
+              keyExtractor={(item) => item.id}
+              style={styles.deviceList}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  style={styles.deviceItem}
+                  onPress={() => toggleDeviceSelection(item.id)}
+                >
+                  <View style={styles.deviceItemContent}>
+                    <MaterialIcons 
+                      name="speaker" 
+                      size={32} 
+                      color="#2196F3" 
+                    />
+                    <View style={styles.deviceItemInfo}>
+                      <Text style={styles.deviceItemName}>{item.name}</Text>
+                      <Text style={styles.deviceItemIP}>{item.ipAddress}:{item.port}</Text>
+                    </View>
+                  </View>
+                  <MaterialIcons
+                    name={selectedDevices.has(item.id) ? 'check-box' : 'check-box-outline-blank'}
+                    size={28}
+                    color={selectedDevices.has(item.id) ? '#2196F3' : '#BDBDBD'}
+                  />
+                </TouchableOpacity>
+              )}
+            />
+
+            <View style={styles.selectionActions}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => {
+                  setShowSelectionModal(false);
+                  setDiscoveredDevices([]);
+                  setSelectedDevices(new Set());
+                }}
+              >
+                <Text style={styles.cancelButtonText}>Annuler</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.addButton2,
+                  selectedDevices.size === 0 && styles.addButtonDisabled
+                ]}
+                onPress={handleAddSelectedDevices}
+                disabled={selectedDevices.size === 0}
+              >
+                <MaterialIcons name="add" size={24} color="#fff" />
+                <Text style={styles.addButtonText}>
+                  Ajouter ({selectedDevices.size})
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -468,5 +589,103 @@ const styles = StyleSheet.create({
   },
   spinner: {
     marginTop: 16,
+  },
+  selectionModalContent: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    width: '90%',
+    maxWidth: 500,
+    maxHeight: '80%',
+    overflow: 'hidden',
+  },
+  selectionHeader: {
+    alignItems: 'center',
+    padding: 24,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  selectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+  },
+  selectionSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  deviceList: {
+    maxHeight: 400,
+  },
+  deviceItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  deviceItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  deviceItemInfo: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  deviceItemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  deviceItemIP: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  selectionActions: {
+    flexDirection: 'row',
+    padding: 16,
+    gap: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+  },
+  cancelButton: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelButtonText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addButton2: {
+    flex: 1,
+    backgroundColor: '#2196F3',
+    borderRadius: 8,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  addButtonDisabled: {
+    backgroundColor: '#BDBDBD',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
 });
