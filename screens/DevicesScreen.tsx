@@ -250,6 +250,7 @@ export default function DevicesScreen({ navigation }: Props) {
       </View>
 
       <View style={styles.languageSelectorContainer}>
+        <Text style={styles.languageSectionTitle}>{t.language}</Text>
         <LanguageSelector />
       </View>
 
@@ -454,6 +455,12 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 8,
     backgroundColor: '#f5f5f5',
+  },
+  languageSectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
   },
   header: {
     flexDirection: 'row',
