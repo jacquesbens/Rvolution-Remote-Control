@@ -16,6 +16,38 @@ const resetStopFlag = () => {
   shouldStopScan = false;
 };
 
+// Fonction pour demander et attendre la permission d'accès au réseau local
+export const requestNetworkPermission = async (): Promise<boolean> => {
+  try {
+    console.log('🔐 Demande de permission d\'accès au réseau local...');
+    
+    // Faire une première requête pour déclencher la demande de permission iOS
+    const testIP = '192.168.1.1';
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    
+    try {
+      await fetch(`http://${testIP}:80/`, {
+        method: 'HEAD',
+        signal: controller.signal,
+      });
+    } catch {
+      // On s'attend à une erreur, c'est normal
+    }
+    
+    clearTimeout(timeoutId);
+    
+    // Attendre un peu pour que l'utilisateur puisse voir et accepter la permission
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    console.log('✅ Permission accordée (ou déjà accordée)');
+    return true;
+  } catch (error) {
+    console.error('❌ Erreur lors de la demande de permission:', error);
+    return false;
+  }
+};
+
 // Fonction pour obtenir l'adresse IP locale de l'appareil et extraire le sous-réseau
 const getLocalSubnet = async (): Promise<string> => {
   // Pour le web, on peut essayer de deviner le réseau local

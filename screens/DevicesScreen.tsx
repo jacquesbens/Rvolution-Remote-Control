@@ -17,7 +17,7 @@ import { RootStackParamList } from '../App';
 import DeviceCard from '../components/DeviceCard';
 import { RvolutionDevice } from '../types';
 import { loadDevices, removeDevice, saveDevices, addDevice } from '../utils/storage';
-import { checkDeviceAvailability, scanNetwork, stopScan } from '../services/networkDiscovery';
+import { checkDeviceAvailability, scanNetwork, stopScan, requestNetworkPermission } from '../services/networkDiscovery';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageSelector from '../components/LanguageSelector';
 
@@ -92,6 +92,21 @@ export default function DevicesScreen({ navigation }: Props) {
         {
           text: t.scanNetwork,
           onPress: async () => {
+            // Demander la permission d'accès au réseau local
+            console.log('📱 Demande de permission d\'accès au réseau local...');
+            const permissionGranted = await requestNetworkPermission();
+            
+            if (!permissionGranted) {
+              Alert.alert(
+                t.error,
+                'Permission d\'accès au réseau local refusée. Veuillez autoriser l\'accès dans les réglages de l\'application.',
+                [{ text: t.ok }]
+              );
+              return;
+            }
+            
+            console.log('✅ Permission accordée, démarrage du scan...');
+            
             setScanning(true);
             setScanProgress(0);
             setFoundDevices(0);
