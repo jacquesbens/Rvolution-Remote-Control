@@ -250,8 +250,10 @@ export default function DevicesScreen({ navigation }: Props) {
       </View>
 
       <View style={styles.languageSelectorContainer}>
-        <Text style={styles.languageSectionTitle}>{t.language}</Text>
-        <LanguageSelector />
+        <View style={styles.languageRow}>
+          <Text style={styles.languageSectionTitle}>{t.language}</Text>
+          <LanguageSelector />
+        </View>
       </View>
 
       <View style={styles.header}>
@@ -453,16 +455,20 @@ const styles = StyleSheet.create({
   languageSelectorContainer: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 8,
+    paddingBottom: 16,
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#e0e0e0',
+  },
+  languageRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   languageSectionTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#333',
-    marginBottom: 12,
   },
   header: {
     flexDirection: 'row',
