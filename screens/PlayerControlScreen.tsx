@@ -30,7 +30,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
   const { device } = route.params;
   const [api] = useState(() => new RvolutionPlayerAPI(device.ipAddress, device.port));
   const [loading, setLoading] = useState<string | null>(null);
-  const [volume, setVolume] = useState(50);
 
   const handleCommand = async (
     command: () => Promise<boolean>,
@@ -54,12 +53,10 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
   };
 
   const handleVolumeUp = () => {
-    setVolume(prev => Math.min(100, prev + 5));
     handleCommand(() => api.volumeUp(), 'volume_up');
   };
 
   const handleVolumeDown = () => {
-    setVolume(prev => Math.max(0, prev - 5));
     handleCommand(() => api.volumeDown(), 'volume_down');
   };
 
@@ -292,32 +289,26 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         {/* Volume */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🔊 Volume</Text>
-          <View style={styles.volumeControls}>
+          <View style={styles.volumeRow}>
             <TouchableOpacity
-              style={styles.volumeButton}
+              style={styles.volumeButtonLarge}
               onPress={handleVolumeDown}
               disabled={loading === 'volume_down'}
             >
-              <MaterialIcons name="volume-down" size={32} color="#2196F3" />
+              <MaterialIcons name="volume-down" size={32} color="#fff" />
+              <Text style={styles.smallButtonText}>Volume -</Text>
             </TouchableOpacity>
             
-            <View style={styles.volumeDisplay}>
-              <Text style={styles.volumeText}>{volume}%</Text>
-              <View style={styles.volumeBar}>
-                <View style={[styles.volumeFill, { width: `${volume}%` }]} />
-              </View>
-            </View>
+            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
 
             <TouchableOpacity
-              style={styles.volumeButton}
+              style={styles.volumeButtonLarge}
               onPress={handleVolumeUp}
               disabled={loading === 'volume_up'}
             >
-              <MaterialIcons name="volume-up" size={32} color="#2196F3" />
+              <MaterialIcons name="volume-up" size={32} color="#fff" />
+              <Text style={styles.smallButtonText}>Volume +</Text>
             </TouchableOpacity>
-          </View>
-          <View style={styles.muteRow}>
-            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
           </View>
         </View>
 
@@ -527,16 +518,23 @@ const styles = StyleSheet.create({
   auxiliaryButton: {
     marginHorizontal: 8,
   },
-  volumeControls: {
+  volumeRow: {
     flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
   },
-  volumeButton: {
-    padding: 12,
+  volumeButtonLarge: {
+    backgroundColor: '#2196F3',
     borderRadius: 8,
-    backgroundColor: '#E3F2FD',
+    padding: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 90,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
   },
   volumeDisplay: {
     flex: 1,
