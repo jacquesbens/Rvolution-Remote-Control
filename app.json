@@ -2,7 +2,7 @@
   "expo": {
     "name": "R_VOLUTION Remote",
     "slug": "rvolution-remote",
-    "version": "1.0.1",
+    "version": "1.0.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "light",
@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rvolution.remote",
-      "buildNumber": "1.0.1",
+      "buildNumber": "1.0.3",
       "infoPlist": {
         "NSLocalNetworkUsageDescription": "Cette application a besoin d'accéder au réseau local pour découvrir et contrôler vos appareils R_VOLUTION.",
         "NSBonjourServices": [
@@ -27,7 +27,7 @@
     },
     "android": {
       "package": "com.rvolution.remote",
-      "versionCode": 2,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#000000"
