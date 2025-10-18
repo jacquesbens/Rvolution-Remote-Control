@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
@@ -35,17 +36,20 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
     command: () => Promise<boolean>,
     commandName: string
   ) => {
+    // Déclencher le retour haptique
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    
     setLoading(commandName);
     try {
       console.log(`🎮 Exécution de la commande: ${commandName}`);
       const success = await command();
       if (!success) {
-        Alert.alert('Erreur', `Impossible d\'exécuter la commande: ${commandName}`);
+        Alert.alert('Erreur', `Impossible d\\'exécuter la commande: ${commandName}`);
       } else {
         console.log(`✅ Commande ${commandName} exécutée avec succès`);
       }
     } catch (error) {
-      console.error(`❌ Erreur lors de l\'exécution de ${commandName}:`, error);
+      console.error(`❌ Erreur lors de l\\'exécution de ${commandName}:`, error);
       Alert.alert('Erreur', 'Une erreur est survenue');
     } finally {
       setLoading(null);

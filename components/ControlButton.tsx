@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import * as Haptics from 'expo-haptics';
 
 interface ControlButtonProps {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -21,6 +22,11 @@ export default function ControlButton({
 }: ControlButtonProps) {
   const isLarge = size === 'large';
   
+  const handlePress = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    onPress();
+  };
+  
   return (
     <TouchableOpacity
       style={[
@@ -28,7 +34,7 @@ export default function ControlButton({
         isLarge ? styles.largeButton : styles.smallButton,
         disabled && styles.disabledButton,
       ]}
-      onPress={onPress}
+      onPress={handlePress}
       disabled={disabled || loading}
     >
       {loading ? (
