@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -10,6 +10,7 @@ import EditDeviceScreen from './screens/EditDeviceScreen';
 import PlayerControlScreen from './screens/PlayerControlScreen';
 import { RvolutionDevice } from './types';
 import { loadDevices } from './utils/storage';
+import type { NavigationContainerRef } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Devices: undefined;
@@ -21,9 +22,8 @@ export type RootStackParamList = {
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [initialRoute, setInitialRoute] = useState<'Devices' | 'PlayerControl'>('Devices');
-  const [initialDevice, setInitialDevice] = useState<RvolutionDevice | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(true);
+  const navigationRef = useRef<NavigationContainerRef<RootStackParamList>>(null);
 
   useEffect(() => {
     const checkDevices = async () => {
@@ -31,16 +31,13 @@ export default function App() {
         const devices = await loadDevices();
         
         if (devices.length === 1) {
-          // Si un seul appareil est enregistré, aller directement à la télécommande
-          setInitialRoute('PlayerControl');
-          setInitialDevice(devices[0]);
-        } else {
-          // Sinon, aller à la liste des appareils
-          setInitialRoute('Devices');
+          // Si un seul appareil est enregistré, naviguer vers la télécommande
+          setTimeout(() => {
+            navigationRef.current?.navigate('PlayerControl', { device: devices[0] });
+          }, 0);
         }
       } catch (error) {
         console.error('Erreur lors du chargement des appareils:', error);
-        setInitialRoute('Devices');
       } finally {
         setIsLoading(false);
       }
@@ -62,27 +59,15 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <LanguageProvider>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {initialRoute === 'PlayerControl' && initialDevice ? (
-              <>
-                <Stack.Screen 
-                  name="PlayerControl" 
-                  component={PlayerControlScreen}
-                  initialParams={{ device: initialDevice }}
-                />
-                <Stack.Screen name="Devices" component={DevicesScreen} />
-                <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
-                <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
-              </>
-            ) : (
-              <>
-                <Stack.Screen name="Devices" component={DevicesScreen} />
-                <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
-                <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
-                <Stack.Screen name="PlayerControl" component={PlayerControlScreen} />
-              </>
-            )}
+        <NavigationContainer ref={navigationRef}>
+          <Stack.Navigator 
+            screenOptions={{ headerShown: false }}
+            id={undefined}
+          >
+            <Stack.Screen name="Devices" component={DevicesScreen} />
+            <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
+            <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
+            <Stack.Screen name="PlayerControl" component={PlayerControlScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </LanguageProvider>
