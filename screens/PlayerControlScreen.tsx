@@ -334,8 +334,8 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>📄 Pagination</Text>
           <View style={styles.pageRow}>
-            {renderSmallButton('arrow-upward', 'Page ↑', () => api.pageUp(), 'page_up', '#00BCD4')}
-            {renderSmallButton('arrow-downward', 'Page ↓', () => api.pageDown(), 'page_down', '#00BCD4')}
+            {renderSmallButton('arrow-upward', 'Page ↑', () => api.pageUp(), 'page_up', '#2196F3')}
+            {renderSmallButton('arrow-downward', 'Page ↓', () => api.pageDown(), 'page_down', '#2196F3')}
           </View>
         </View>
 
