@@ -500,7 +500,7 @@ const styles = StyleSheet.create({
   },
   dpadButton: {
     backgroundColor: '#2196F3',
-    borderRadius: 12,
+    borderRadius: 42.5, // 85 / 2 pour un cercle parfait
     width: 85,
     height: 85,
     alignItems: 'center',
