@@ -18,6 +18,8 @@ import DeviceCard from '../components/DeviceCard';
 import { RvolutionDevice } from '../types';
 import { loadDevices, removeDevice, saveDevices, addDevice } from '../utils/storage';
 import { checkDeviceAvailability, scanNetwork, stopScan } from '../services/networkDiscovery';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSelector from '../components/LanguageSelector';
 
 type DevicesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Devices'>;
 
@@ -26,6 +28,7 @@ interface Props {
 }
 
 export default function DevicesScreen({ navigation }: Props) {
+  const { t } = useLanguage();
   const [devices, setDevices] = useState<RvolutionDevice[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [scanning, setScanning] = useState(false);
@@ -42,9 +45,9 @@ export default function DevicesScreen({ navigation }: Props) {
       setDevices(savedDevices);
     } catch (error) {
       console.error('Error loading devices:', error);
-      Alert.alert('Erreur', 'Impossible de charger les appareils');
+      Alert.alert(t.error, t.error);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     loadDevicesList();
@@ -81,14 +84,13 @@ export default function DevicesScreen({ navigation }: Props) {
   };
 
   const handleScanNetwork = async () => {
-    // Demander confirmation avant de scanner
     Alert.alert(
-      'Scanner le réseau',
-      'Cette opération va scanner votre réseau local pour trouver des appareils R_VOLUTION.\n\nCela peut prendre quelques minutes.',
+      t.scanNetworkTitle,
+      t.scanNetworkMessage,
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         {
-          text: 'Scanner',
+          text: t.scanNetwork,
           onPress: async () => {
             setScanning(true);
             setScanProgress(0);
@@ -102,17 +104,14 @@ export default function DevicesScreen({ navigation }: Props) {
               
               const foundDevicesList = await scanNetwork(
                 (device) => {
-                  // Callback appelé quand un appareil est trouvé
                   console.log('✅ Appareil découvert:', device.name, device.ipAddress);
                   setFoundDevices(prev => prev + 1);
                   tempDiscoveredDevices.push(device);
                 },
                 (progress) => {
-                  // Callback de progression
                   setScanProgress(progress);
                 },
                 (ip) => {
-                  // Callback pour afficher l'IP en cours de scan
                   setCurrentIP(ip);
                 }
               );
@@ -120,23 +119,17 @@ export default function DevicesScreen({ navigation }: Props) {
               setScanning(false);
               
               if (foundDevicesList.length > 0) {
-                // Afficher le modal de sélection
                 setDiscoveredDevices(foundDevicesList);
                 setSelectedDevices(new Set(foundDevicesList.map(d => d.id)));
                 setShowSelectionModal(true);
               } else {
                 Alert.alert(
-                  'Aucun appareil trouvé',
-                  'Aucun appareil R_VOLUTION trouvé sur le réseau.\n\n' +
-                  'Vérifiez que :\n' +
-                  '• Vos appareils sont allumés\n' +
-                  '• Ils sont connectés au même réseau Wi-Fi\n' +
-                  '• Le port 80 est accessible\n' +
-                  '• L\'endpoint /status répond correctement',
+                  t.noDevicesFoundTitle,
+                  t.noDevicesFoundMessage,
                   [
-                    { text: 'Réessayer', onPress: handleScanNetwork },
-                    { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
-                    { text: 'OK', style: 'cancel' }
+                    { text: t.retry, onPress: handleScanNetwork },
+                    { text: t.addManually, onPress: () => navigation.navigate('AddDevice') },
+                    { text: t.ok, style: 'cancel' }
                   ]
                 );
               }
@@ -144,12 +137,11 @@ export default function DevicesScreen({ navigation }: Props) {
               console.error('❌ Erreur lors du scan:', error);
               setScanning(false);
               Alert.alert(
-                'Erreur',
-                'Une erreur est survenue lors du scan du réseau.\n\n' +
-                'Essayez d\'ajouter un appareil manuellement.',
+                t.error,
+                t.error,
                 [
-                  { text: 'Ajouter manuellement', onPress: () => navigation.navigate('AddDevice') },
-                  { text: 'OK', style: 'cancel' }
+                  { text: t.addManually, onPress: () => navigation.navigate('AddDevice') },
+                  { text: t.ok, style: 'cancel' }
                 ]
               );
             }
@@ -161,12 +153,12 @@ export default function DevicesScreen({ navigation }: Props) {
 
   const handleStopScan = () => {
     Alert.alert(
-      'Arrêter le scan',
-      'Voulez-vous vraiment arrêter le scan en cours ?',
+      t.stopScan,
+      t.stopScan,
       [
-        { text: 'Continuer', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         {
-          text: 'Arrêter',
+          text: t.stopScan,
           style: 'destructive',
           onPress: () => {
             stopScan();
@@ -193,7 +185,7 @@ export default function DevicesScreen({ navigation }: Props) {
     const devicesToAdd = discoveredDevices.filter(d => selectedDevices.has(d.id));
     
     if (devicesToAdd.length === 0) {
-      Alert.alert('Aucun appareil sélectionné', 'Veuillez sélectionner au moins un appareil à ajouter.');
+      Alert.alert(t.noDeviceSelected, t.noDeviceSelected);
       return;
     }
 
@@ -208,13 +200,13 @@ export default function DevicesScreen({ navigation }: Props) {
       await loadDevicesList();
       
       Alert.alert(
-        'Succès',
-        `${devicesToAdd.length} appareil(s) ajouté(s) avec succès`,
-        [{ text: 'OK' }]
+        t.success,
+        `${devicesToAdd.length} ${t.devicesAddedSuccess}`,
+        [{ text: t.ok }]
       );
     } catch (error) {
       console.error('❌ Erreur lors de l\'ajout des appareils:', error);
-      Alert.alert('Erreur', 'Impossible d\'ajouter les appareils');
+      Alert.alert(t.error, t.error);
     }
   };
 
@@ -224,12 +216,12 @@ export default function DevicesScreen({ navigation }: Props) {
 
   const handleDeleteDevice = (deviceId: string) => {
     Alert.alert(
-      'Supprimer l\'appareil',
-      'Êtes-vous sûr de vouloir supprimer cet appareil ?',
+      t.deleteDeviceTitle,
+      t.deleteDeviceMessage,
       [
-        { text: 'Annuler', style: 'cancel' },
+        { text: t.cancel, style: 'cancel' },
         {
-          text: 'Supprimer',
+          text: t.delete,
           style: 'destructive',
           onPress: async () => {
             await removeDevice(deviceId);
@@ -245,8 +237,8 @@ export default function DevicesScreen({ navigation }: Props) {
       navigation.navigate('PlayerControl', { device });
     } else {
       Alert.alert(
-        'Appareil hors ligne',
-        'Cet appareil n\'est pas accessible. Vérifiez qu\'il est allumé et connecté au réseau.'
+        t.deviceOffline,
+        t.deviceOfflineMessage
       );
     }
   };
@@ -254,7 +246,7 @@ export default function DevicesScreen({ navigation }: Props) {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.title}>Mes Appareils</Text>
+        <Text style={styles.title}>{t.myDevices}</Text>
         <View style={styles.headerButtons}>
           <TouchableOpacity
             style={styles.scanButton}
@@ -272,15 +264,19 @@ export default function DevicesScreen({ navigation }: Props) {
         </View>
       </View>
 
+      <View style={styles.languageSelectorContainer}>
+        <LanguageSelector />
+      </View>
+
       {devices.length === 0 ? (
         <View style={styles.emptyContainer}>
           <MaterialIcons name="speaker" size={80} color="#BDBDBD" />
-          <Text style={styles.emptyText}>Aucun appareil</Text>
+          <Text style={styles.emptyText}>{t.noDevices}</Text>
           <Text style={styles.emptySubtext}>
-            Appuyez sur 🔍 pour scanner le réseau
+            {t.scanNetwork}
           </Text>
           <Text style={styles.emptySubtext}>
-            ou sur + pour ajouter manuellement
+            {t.addManually}
           </Text>
         </View>
       ) : (
@@ -311,9 +307,9 @@ export default function DevicesScreen({ navigation }: Props) {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <MaterialIcons name="search" size={60} color="#2196F3" />
-            <Text style={styles.modalTitle}>Scan du réseau en cours...</Text>
+            <Text style={styles.modalTitle}>{t.scanInProgress}</Text>
             <Text style={styles.modalSubtitle}>
-              Recherche d&apos;appareils R_VOLUTION
+              {t.searchingDevices}
             </Text>
             
             <View style={styles.progressContainer}>
@@ -332,7 +328,7 @@ export default function DevicesScreen({ navigation }: Props) {
 
             {foundDevices > 0 && (
               <Text style={styles.foundText}>
-                {foundDevices} appareil(s) trouvé(s)
+                {foundDevices} {t.devicesFound}
               </Text>
             )}
 
@@ -345,7 +341,7 @@ export default function DevicesScreen({ navigation }: Props) {
               onPress={handleStopScan}
             >
               <MaterialIcons name="stop" size={24} color="#fff" />
-              <Text style={styles.stopButtonText}>Arrêter le scan</Text>
+              <Text style={styles.stopButtonText}>{t.stopScan}</Text>
             </TouchableOpacity>
 
             <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
@@ -364,10 +360,10 @@ export default function DevicesScreen({ navigation }: Props) {
             <View style={styles.selectionHeader}>
               <MaterialIcons name="devices" size={40} color="#2196F3" />
               <Text style={styles.selectionTitle}>
-                Appareils trouvés
+                {t.devicesFoundTitle}
               </Text>
               <Text style={styles.selectionSubtitle}>
-                Sélectionnez les appareils à ajouter
+                {t.devicesFoundSubtitle}
               </Text>
             </View>
 
@@ -409,7 +405,7 @@ export default function DevicesScreen({ navigation }: Props) {
                   setSelectedDevices(new Set());
                 }}
               >
-                <Text style={styles.cancelButtonText}>Annuler</Text>
+                <Text style={styles.cancelButtonText}>{t.cancel}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -422,7 +418,7 @@ export default function DevicesScreen({ navigation }: Props) {
               >
                 <MaterialIcons name="add" size={24} color="#fff" />
                 <Text style={styles.addButtonText}>
-                  Ajouter ({selectedDevices.size})
+                  {t.addSelected} ({selectedDevices.size})
                 </Text>
               </TouchableOpacity>
             </View>
@@ -456,6 +452,11 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     gap: 12,
+  },
+  languageSelectorContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    backgroundColor: '#f5f5f5',
   },
   scanButton: {
     backgroundColor: '#2196F3',

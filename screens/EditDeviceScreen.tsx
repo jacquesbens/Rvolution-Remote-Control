@@ -17,6 +17,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import { createDeviceFromIP } from '../services/networkDiscovery';
 import { loadDevices, saveDevices } from '../utils/storage';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type EditDeviceScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EditDevice'>;
 type EditDeviceScreenRouteProp = RouteProp<RootStackParamList, 'EditDevice'>;
@@ -27,6 +28,7 @@ interface Props {
 }
 
 export default function EditDeviceScreen({ navigation, route }: Props) {
+  const { t } = useLanguage();
   const { device } = route.params;
   const [deviceName, setDeviceName] = useState(device.name);
   const [ipAddress, setIpAddress] = useState(device.ipAddress);
@@ -45,17 +47,17 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
 
   const handleSaveDevice = async () => {
     if (!deviceName.trim()) {
-      Alert.alert('Erreur', 'Veuillez entrer un nom pour l\'appareil');
+      Alert.alert(t.error, t.enterDeviceName);
       return;
     }
 
     if (!ipAddress.trim()) {
-      Alert.alert('Erreur', 'Veuillez entrer une adresse IP');
+      Alert.alert(t.error, t.enterIPAddressEdit);
       return;
     }
 
     if (!validateIP(ipAddress)) {
-      Alert.alert('Erreur', 'Adresse IP invalide');
+      Alert.alert(t.error, t.invalidIPAddress);
       return;
     }
 
@@ -69,13 +71,12 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
 
         if (!verifiedDevice) {
           Alert.alert(
-            'Connexion impossible',
-            `Impossible de se connecter à http://${ipAddress}:${device.port}\n\n` +
-            'Voulez-vous quand même enregistrer cette adresse ?',
+            t.connectionFailed,
+            `${t.connectionFailed} http://${ipAddress}:${device.port}\n\n${t.editInfoMessage}`,
             [
-              { text: 'Annuler', style: 'cancel', onPress: () => setLoading(false) },
+              { text: t.cancel, style: 'cancel', onPress: () => setLoading(false) },
               {
-                text: 'Enregistrer quand même',
+                text: t.saveAnyway,
                 onPress: async () => {
                   await updateDevice();
                 }
@@ -91,9 +92,9 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
       console.error('❌ Erreur lors de la modification:', error);
       setLoading(false);
       Alert.alert(
-        'Erreur',
-        `Une erreur est survenue :\n${error}\n\nVérifiez votre connexion réseau.`,
-        [{ text: 'OK' }]
+        t.error,
+        `${t.error}:\n${error}`,
+        [{ text: t.ok }]
       );
     }
   };
@@ -116,16 +117,16 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
         console.log('✅ Appareil modifié avec succès');
         
         Alert.alert(
-          'Succès',
-          'Appareil modifié avec succès',
-          [{ text: 'OK', onPress: () => navigation.goBack() }]
+          t.success,
+          t.deviceUpdatedSuccess,
+          [{ text: t.ok, onPress: () => navigation.goBack() }]
         );
       } else {
         throw new Error('Appareil non trouvé');
       }
     } catch (error) {
       console.error('❌ Erreur lors de la sauvegarde:', error);
-      Alert.alert('Erreur', 'Impossible de sauvegarder les modifications');
+      Alert.alert(t.error, t.error);
     } finally {
       setLoading(false);
     }
@@ -144,7 +145,7 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
           >
             <MaterialIcons name="arrow-back" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.title}>Modifier l&apos;appareil</Text>
+          <Text style={styles.title}>{t.editDevice}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -153,19 +154,19 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
             <MaterialIcons name="edit" size={80} color="#2196F3" />
           </View>
 
-          <Text style={styles.label}>Nom de l&apos;appareil *</Text>
+          <Text style={styles.label}>{t.deviceNameRequired}</Text>
           <TextInput
             style={styles.input}
-            placeholder="R_VOLUTION Salon"
+            placeholder={t.deviceNamePlaceholder}
             value={deviceName}
             onChangeText={setDeviceName}
             editable={!loading}
           />
 
-          <Text style={styles.label}>Adresse IP *</Text>
+          <Text style={styles.label}>{t.ipAddress}</Text>
           <TextInput
             style={styles.input}
-            placeholder="192.168.1.100"
+            placeholder={t.ipAddressPlaceholder}
             value={ipAddress}
             onChangeText={setIpAddress}
             keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'default'}
@@ -184,7 +185,7 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
             ) : (
               <>
                 <MaterialIcons name="save" size={24} color="#fff" />
-                <Text style={styles.saveButtonText}>Enregistrer</Text>
+                <Text style={styles.saveButtonText}>{t.saveChanges}</Text>
               </>
             )}
           </TouchableOpacity>
@@ -192,7 +193,7 @@ export default function EditDeviceScreen({ navigation, route }: Props) {
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={20} color="#2196F3" />
             <Text style={styles.infoText}>
-              Si vous modifiez l&apos;adresse IP, l&apos;application vérifiera que l&apos;appareil est accessible à cette nouvelle adresse.
+              {t.editInfoMessage}
             </Text>
           </View>
         </View>
