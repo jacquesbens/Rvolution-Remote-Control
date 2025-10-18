@@ -10,7 +10,7 @@
     "scheme": "rvolution",
     "description": "Contrôlez vos appareils R_VOLUTION depuis votre smartphone. Découverte automatique, contrôle de lecture et gestion du volume.",
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/adaptive-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
@@ -44,7 +44,18 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "newArchEnabled": true
+          },
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ]
     ]
   }
 }
