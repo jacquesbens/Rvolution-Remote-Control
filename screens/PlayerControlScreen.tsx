@@ -117,7 +117,6 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         </TouchableOpacity>
         <View style={styles.headerInfo}>
           <Text style={styles.deviceName}>{device.name}</Text>
-          <Text style={styles.deviceIP}>{device.ipAddress}</Text>
         </View>
         <View style={styles.placeholder} />
       </View>
