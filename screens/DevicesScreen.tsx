@@ -249,6 +249,10 @@ export default function DevicesScreen({ navigation }: Props) {
         <Text style={styles.appTitle}>{t.appTitle}</Text>
       </View>
 
+      <View style={styles.languageSelectorContainer}>
+        <LanguageSelector />
+      </View>
+
       <View style={styles.header}>
         <Text style={styles.title}>{t.myDevices}</Text>
         <View style={styles.headerButtons}>
@@ -266,10 +270,6 @@ export default function DevicesScreen({ navigation }: Props) {
             <MaterialIcons name="add" size={28} color="#fff" />
           </TouchableOpacity>
         </View>
-      </View>
-
-      <View style={styles.languageSelectorContainer}>
-        <LanguageSelector />
       </View>
 
       {devices.length === 0 ? (
@@ -449,6 +449,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
+  languageSelectorContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
+    backgroundColor: '#f5f5f5',
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -467,11 +473,6 @@ const styles = StyleSheet.create({
   headerButtons: {
     flexDirection: 'row',
     gap: 12,
-  },
-  languageSelectorContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 16,
-    backgroundColor: '#f5f5f5',
   },
   scanButton: {
     backgroundColor: '#2196F3',
