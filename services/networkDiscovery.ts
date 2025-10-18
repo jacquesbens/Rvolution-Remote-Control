@@ -100,7 +100,7 @@ const checkRvolutionDevice = async (
 
     // Si le serveur répond (même avec une erreur), c'est un appareil R_VOLUTION
     if (response.status !== 404) {
-      const deviceName = `R_VOLUTION (${ipAddress})`;
+      const deviceName = 'R_VOLUTION';
 
       return {
         id: `${ipAddress}:${port}`,
