@@ -125,7 +125,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Alimentation */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>⚡ Alimentation</Text>
+          <Text style={styles.sectionTitle}>⚡ Power</Text>
           <View style={styles.powerRow}>
             {renderSmallButton('power-settings-new', 'Power', () => api.powerToggle(), 'power_toggle', '#F44336')}
             {renderSmallButton('power', 'ON', () => api.powerOn(), 'power_on', '#2196F3')}
@@ -135,7 +135,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Pavé numérique */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔢 Pavé numérique</Text>
+          <Text style={styles.sectionTitle}>🔢 Numpad</Text>
           <View style={styles.numberPad}>
             <View style={styles.numberRow}>
               {renderNumberButton(1)}
@@ -153,7 +153,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               {renderNumberButton(9)}
             </View>
             <View style={styles.numberRow}>
-              {renderNumpadButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle')}
+              {renderNumpadButton('subtitles', 'Subtitle', () => api.subtitle(), 'subtitle')}
               {renderNumberButton(0)}
               {renderNumpadButton('audiotrack', 'Audio', () => api.audio(), 'audio')}
             </View>
@@ -232,7 +232,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Contrôles de lecture */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
+          <Text style={styles.sectionTitle}>▶️ Playback</Text>
           <View style={styles.playbackRow}>
             <ControlButton
               icon="play-arrow"
@@ -259,22 +259,22 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <View style={styles.playbackRow}>
             <ControlButton
               icon="skip-previous"
-              label="Préc."
+              label="Prev"
               onPress={() => handleCommand(() => api.previous(), 'previous')}
               loading={loading === 'previous'}
               size="small"
             />
             <ControlButton
               icon="skip-next"
-              label="Suiv."
+              label="Next"
               onPress={() => handleCommand(() => api.next(), 'next')}
               loading={loading === 'next'}
               size="small"
             />
           </View>
           <View style={styles.playbackRow}>
-            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#2196F3')}
-            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#2196F3')}
+            {renderSmallButton('fast-rewind', 'Fast Rev', () => api.fastReverse(), 'fast_reverse', '#2196F3')}
+            {renderSmallButton('fast-forward', 'Fast Fwd', () => api.fastForward(), 'fast_forward', '#2196F3')}
           </View>
           <View style={styles.playbackRow}>
             {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#2196F3')}
@@ -297,7 +297,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               <Text style={styles.smallButtonText}>Volume -</Text>
             </TouchableOpacity>
             
-            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#2196F3')}
+            {renderSmallButton('volume-off', 'Mute', () => api.mute(), 'mute', '#2196F3')}
 
             <TouchableOpacity
               style={styles.volumeButtonLarge}
@@ -312,10 +312,10 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Fonctions spéciales */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
+          <Text style={styles.sectionTitle}>🎬 Special Functions</Text>
           <View style={styles.specialRow}>
             {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
-            {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#2196F3')}
+            {renderSmallButton('repeat', 'Repeat', () => api.repeat(), 'repeat', '#2196F3')}
             {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#2196F3')}
           </View>
           <View style={styles.specialRow}>
@@ -326,27 +326,27 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           </View>
           <View style={styles.specialRow}>
             {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#2196F3')}
-            {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#2196F3')}
+            {renderSmallButton('delete', 'Delete', () => api.deleteKey(), 'delete', '#2196F3')}
           </View>
         </View>
 
         {/* Pagination */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📄 Pagination</Text>
+          <Text style={styles.sectionTitle}>📄 Page</Text>
           <View style={styles.pageRow}>
-            {renderSmallButton('arrow-upward', 'Page ↑', () => api.pageUp(), 'page_up', '#2196F3')}
-            {renderSmallButton('arrow-downward', 'Page ↓', () => api.pageDown(), 'page_down', '#2196F3')}
+            {renderSmallButton('arrow-upward', 'Page Up', () => api.pageUp(), 'page_up', '#2196F3')}
+            {renderSmallButton('arrow-downward', 'Page Down', () => api.pageDown(), 'page_down', '#2196F3')}
           </View>
         </View>
 
         {/* Boutons de fonction couleur */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎨 Fonctions couleur</Text>
+          <Text style={styles.sectionTitle}>🎨 Color Functions</Text>
           <View style={styles.colorRow}>
-            {renderSmallButton('circle', 'Rouge', () => api.functionRed(), 'function_red', '#F44336')}
-            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#4CAF50')}
-            {renderSmallButton('circle', 'Jaune', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
-            {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
+            {renderSmallButton('circle', 'Red', () => api.functionRed(), 'function_red', '#F44336')}
+            {renderSmallButton('circle', 'Green', () => api.functionGreen(), 'function_green', '#4CAF50')}
+            {renderSmallButton('circle', 'Yellow', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
+            {renderSmallButton('circle', 'Blue', () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>
         </View>
       </ScrollView>
