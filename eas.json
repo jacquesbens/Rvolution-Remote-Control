@@ -14,7 +14,19 @@
       }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "cache": {
+        "disabled": true
+      }
+    },
+    "production-clean": {
+      "extends": "production",
+      "cache": {
+        "disabled": true
+      },
+      "env": {
+        "SKIP_BUNDLING": "0"
+      }
     }
   },
   "submit": {
