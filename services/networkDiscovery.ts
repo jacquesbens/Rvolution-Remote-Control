@@ -1,5 +1,6 @@
 import { RvolutionDevice } from '../types';
 import { Platform } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 // Fonction pour obtenir l'adresse IP locale de l'appareil et extraire le sous-réseau
 const getLocalSubnet = async (): Promise<string> => {
@@ -39,9 +40,31 @@ const getLocalSubnet = async (): Promise<string> => {
     }
   }
   
-  // Pour mobile, on retourne le réseau le plus commun
-  // Dans une vraie application, vous utiliseriez react-native-network-info
-  return '192.168.1';
+  // Pour mobile, obtenir l'IP réelle du réseau
+  try {
+    const netInfoState = await NetInfo.fetch();
+    
+    // Vérifier si on a une adresse IP
+    if (netInfoState.details && 'ipAddress' in netInfoState.details) {
+      const ipAddress = netInfoState.details.ipAddress;
+      
+      if (ipAddress && typeof ipAddress === 'string') {
+        // Extraire les 3 premiers octets (ex: "192.168.1.45" -> "192.168.1")
+        const subnetMatch = ipAddress.match(/(\d+\.\d+\.\d+)\.\d+/);
+        if (subnetMatch && subnetMatch[1]) {
+          console.log(`📱 Sous-réseau mobile détecté: ${subnetMatch[1]}.x`);
+          return subnetMatch[1];
+        }
+      }
+    }
+    
+    // Fallback si on ne peut pas obtenir l'IP
+    console.log('⚠️ Impossible de détecter le sous-réseau mobile, utilisation du fallback');
+    return '192.168.1';
+  } catch (error) {
+    console.error('❌ Erreur lors de la détection du sous-réseau:', error);
+    return '192.168.1';
+  }
 };
 
 // Fonction pour vérifier si un appareil R_VOLUTION est à cette adresse
