@@ -174,6 +174,10 @@ export default function DevicesScreen({ navigation }: Props) {
     );
   };
 
+  const handleEditDevice = (device: RvolutionDevice) => {
+    navigation.navigate('EditDevice', { device });
+  };
+
   const handleDeleteDevice = (deviceId: string) => {
     Alert.alert(
       'Supprimer l\'appareil',
@@ -243,6 +247,7 @@ export default function DevicesScreen({ navigation }: Props) {
             <DeviceCard
               device={item}
               onPress={() => handleDevicePress(item)}
+              onEdit={() => handleEditDevice(item)}
               onDelete={() => handleDeleteDevice(item.id)}
             />
           )}

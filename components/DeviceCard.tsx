@@ -6,10 +6,11 @@ import { RvolutionDevice } from '../types';
 interface DeviceCardProps {
   device: RvolutionDevice;
   onPress: () => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-export default function DeviceCard({ device, onPress, onDelete }: DeviceCardProps) {
+export default function DeviceCard({ device, onPress, onEdit, onDelete }: DeviceCardProps) {
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.iconContainer}>
@@ -34,15 +35,27 @@ export default function DeviceCard({ device, onPress, onDelete }: DeviceCardProp
         </View>
       </View>
 
-      <TouchableOpacity 
-        style={styles.deleteButton} 
-        onPress={(e) => {
-          e.stopPropagation();
-          onDelete();
-        }}
-      >
-        <MaterialIcons name="delete" size={24} color="#F44336" />
-      </TouchableOpacity>
+      <View style={styles.actionsContainer}>
+        <TouchableOpacity 
+          style={styles.editButton} 
+          onPress={(e) => {
+            e.stopPropagation();
+            onEdit();
+          }}
+        >
+          <MaterialIcons name="edit" size={24} color="#2196F3" />
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={styles.deleteButton} 
+          onPress={(e) => {
+            e.stopPropagation();
+            onDelete();
+          }}
+        >
+          <MaterialIcons name="delete" size={24} color="#F44336" />
+        </TouchableOpacity>
+      </View>
     </TouchableOpacity>
   );
 }
@@ -91,6 +104,14 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 12,
     color: '#666',
+  },
+  actionsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  editButton: {
+    padding: 8,
   },
   deleteButton: {
     padding: 8,
