@@ -32,6 +32,7 @@ export default function DevicesScreen({ navigation }: Props) {
   const [scanProgress, setScanProgress] = useState(0);
   const [foundDevices, setFoundDevices] = useState(0);
   const [currentIP, setCurrentIP] = useState('');
+  const [scannedIPs, setScannedIPs] = useState<string[]>([]);
 
   const loadDevicesList = useCallback(async () => {
     try {
@@ -90,6 +91,7 @@ export default function DevicesScreen({ navigation }: Props) {
             setScanning(true);
             setScanProgress(0);
             setFoundDevices(0);
+            setScannedIPs([]);
 
             try {
               console.log('🚀 Démarrage du scan réseau...');
@@ -108,6 +110,7 @@ export default function DevicesScreen({ navigation }: Props) {
                 (ip) => {
                   // Callback pour afficher l'IP en cours de scan
                   setCurrentIP(ip);
+                  setScannedIPs(prev => [...prev, ip]);
                 }
               );
 
@@ -272,6 +275,17 @@ export default function DevicesScreen({ navigation }: Props) {
               Scan: {currentIP}
             </Text>
 
+            <View style={styles.scannedIPsContainer}>
+              <Text style={styles.scannedIPsTitle}>Adresses scannées:</Text>
+              <View style={styles.scannedIPsList}>
+                {scannedIPs.slice(-10).map((ip, index) => (
+                  <Text key={`${ip}-${index}`} style={styles.scannedIPItem}>
+                    {ip}
+                  </Text>
+                ))}
+              </View>
+            </View>
+
             <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
           </View>
         </View>
@@ -411,6 +425,29 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 8,
     fontFamily: 'monospace',
+  },
+  scannedIPsContainer: {
+    marginTop: 16,
+    width: '100%',
+    maxHeight: 150,
+  },
+  scannedIPsTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#666',
+    marginBottom: 8,
+  },
+  scannedIPsList: {
+    backgroundColor: '#F5F5F5',
+    borderRadius: 8,
+    padding: 8,
+    maxHeight: 120,
+  },
+  scannedIPItem: {
+    fontSize: 11,
+    color: '#666',
+    fontFamily: 'monospace',
+    paddingVertical: 2,
   },
   spinner: {
     marginTop: 16,

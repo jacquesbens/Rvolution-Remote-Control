@@ -1,28 +1,47 @@
 import { RvolutionDevice } from '../types';
 import { Platform } from 'react-native';
 
-// Fonction pour obtenir l'adresse IP locale de l'appareil
-const getLocalIPAddress = async (): Promise<string> => {
+// Fonction pour obtenir l'adresse IP locale de l'appareil et extraire le sous-réseau
+const getLocalSubnet = async (): Promise<string> => {
   // Pour le web, on peut essayer de deviner le réseau local
   if (Platform.OS === 'web') {
-    return '192.168.1';
+    // Essayer de détecter le réseau via une connexion WebRTC
+    try {
+      const pc = new RTCPeerConnection({ iceServers: [] });
+      pc.createDataChannel('');
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+      
+      return new Promise((resolve) => {
+        pc.onicecandidate = (ice) => {
+          if (!ice || !ice.candidate || !ice.candidate.candidate) {
+            resolve('192.168.1'); // Fallback
+            return;
+          }
+          
+          const ipMatch = ice.candidate.candidate.match(/(\d+\.\d+\.\d+)\.\d+/);
+          if (ipMatch && ipMatch[1]) {
+            resolve(ipMatch[1]);
+          } else {
+            resolve('192.168.1');
+          }
+          pc.close();
+        };
+        
+        // Timeout après 1 seconde
+        setTimeout(() => {
+          resolve('192.168.1');
+          pc.close();
+        }, 1000);
+      });
+    } catch {
+      return '192.168.1';
+    }
   }
   
   // Pour mobile, on retourne le réseau le plus commun
   // Dans une vraie application, vous utiliseriez react-native-network-info
   return '192.168.1';
-};
-
-// Fonction pour tester plusieurs sous-réseaux communs
-const getCommonSubnets = (): string[] => {
-  return [
-    '192.168.1',
-    '192.168.0',
-    '192.168.2',
-    '10.0.0',
-    '10.0.1',
-    '172.16.0',
-  ];
 };
 
 // Fonction pour vérifier si un appareil R_VOLUTION est à cette adresse
@@ -73,53 +92,50 @@ export const scanNetwork = async (
   
   console.log('🔍 Démarrage du scan réseau...');
   
-  // Obtenir les sous-réseaux à scanner
-  const subnets = getCommonSubnets();
-  const totalIPs = subnets.length * 254;
+  // Obtenir le sous-réseau local
+  const subnet = await getLocalSubnet();
+  console.log(`📡 Scan du sous-réseau ${subnet}.x...`);
+  
+  const totalIPs = 254;
   let scannedIPs = 0;
   
-  // Scanner chaque sous-réseau
-  for (const subnet of subnets) {
-    console.log(`📡 Scan du sous-réseau ${subnet}.x...`);
+  // Scanner les adresses IP de 1 à 254 par batch de 20 pour éviter de surcharger
+  const batchSize = 20;
+  
+  for (let start = 1; start <= 254; start += batchSize) {
+    const end = Math.min(start + batchSize - 1, 254);
+    const batchPromises: Promise<void>[] = [];
     
-    // Scanner les adresses IP de 1 à 254 par batch de 20 pour éviter de surcharger
-    const batchSize = 20;
-    
-    for (let start = 1; start <= 254; start += batchSize) {
-      const end = Math.min(start + batchSize - 1, 254);
-      const batchPromises: Promise<void>[] = [];
+    for (let i = start; i <= end; i++) {
+      const ipAddress = `${subnet}.${i}`;
       
-      for (let i = start; i <= end; i++) {
-        const ipAddress = `${subnet}.${i}`;
+      const scanPromise = (async () => {
+        if (onIPScanned) {
+          onIPScanned(ipAddress);
+        }
         
-        const scanPromise = (async () => {
-          if (onIPScanned) {
-            onIPScanned(ipAddress);
-          }
-          
-          const device = await checkRvolutionDevice(ipAddress, port);
-          
-          if (device) {
-            console.log(`✅ Appareil trouvé: ${device.name} à ${ipAddress}`);
-            devices.push(device);
-            
-            if (onDeviceFound) {
-              onDeviceFound(device);
-            }
-          }
-          
-          scannedIPs++;
-          if (onProgress) {
-            onProgress(scannedIPs / totalIPs);
-          }
-        })();
+        const device = await checkRvolutionDevice(ipAddress, port);
         
-        batchPromises.push(scanPromise);
-      }
+        if (device) {
+          console.log(`✅ Appareil trouvé: ${device.name} à ${ipAddress}`);
+          devices.push(device);
+          
+          if (onDeviceFound) {
+            onDeviceFound(device);
+          }
+        }
+        
+        scannedIPs++;
+        if (onProgress) {
+          onProgress(scannedIPs / totalIPs);
+        }
+      })();
       
-      // Attendre que le batch soit terminé avant de passer au suivant
-      await Promise.all(batchPromises);
+      batchPromises.push(scanPromise);
     }
+    
+    // Attendre que le batch soit terminé avant de passer au suivant
+    await Promise.all(batchPromises);
   }
   
   console.log(`✨ Scan terminé. ${devices.length} appareil(s) trouvé(s).`);
@@ -137,46 +153,46 @@ export const quickScan = async (
   
   console.log('⚡ Démarrage du scan rapide...');
   
-  // Scanner uniquement les IPs les plus probables (192.168.1.x et 192.168.0.x)
-  const quickSubnets = ['192.168.1', '192.168.0'];
-  const totalIPs = quickSubnets.length * 254;
+  // Obtenir le sous-réseau local
+  const subnet = await getLocalSubnet();
+  console.log(`📡 Scan rapide du sous-réseau ${subnet}.x...`);
+  
+  const totalIPs = 254;
   let scannedIPs = 0;
   
-  for (const subnet of quickSubnets) {
-    const batchSize = 30;
+  const batchSize = 30;
+  
+  for (let start = 1; start <= 254; start += batchSize) {
+    const end = Math.min(start + batchSize - 1, 254);
+    const batchPromises: Promise<void>[] = [];
     
-    for (let start = 1; start <= 254; start += batchSize) {
-      const end = Math.min(start + batchSize - 1, 254);
-      const batchPromises: Promise<void>[] = [];
+    for (let i = start; i <= end; i++) {
+      const ipAddress = `${subnet}.${i}`;
       
-      for (let i = start; i <= end; i++) {
-        const ipAddress = `${subnet}.${i}`;
+      const scanPromise = (async () => {
+        if (onIPScanned) {
+          onIPScanned(ipAddress);
+        }
         
-        const scanPromise = (async () => {
-          if (onIPScanned) {
-            onIPScanned(ipAddress);
-          }
-          
-          const device = await checkRvolutionDevice(ipAddress, port);
-          
-          if (device) {
-            devices.push(device);
-            if (onDeviceFound) {
-              onDeviceFound(device);
-            }
-          }
-          
-          scannedIPs++;
-          if (onProgress) {
-            onProgress(scannedIPs / totalIPs);
-          }
-        })();
+        const device = await checkRvolutionDevice(ipAddress, port);
         
-        batchPromises.push(scanPromise);
-      }
+        if (device) {
+          devices.push(device);
+          if (onDeviceFound) {
+            onDeviceFound(device);
+          }
+        }
+        
+        scannedIPs++;
+        if (onProgress) {
+          onProgress(scannedIPs / totalIPs);
+        }
+      })();
       
-      await Promise.all(batchPromises);
+      batchPromises.push(scanPromise);
     }
+    
+    await Promise.all(batchPromises);
   }
   
   console.log(`✨ Scan rapide terminé. ${devices.length} appareil(s) trouvé(s).`);
