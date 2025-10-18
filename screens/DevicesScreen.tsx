@@ -31,6 +31,7 @@ export default function DevicesScreen({ navigation }: Props) {
   const [scanning, setScanning] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
   const [foundDevices, setFoundDevices] = useState(0);
+  const [currentIP, setCurrentIP] = useState('');
 
   const loadDevicesList = useCallback(async () => {
     try {
@@ -103,6 +104,10 @@ export default function DevicesScreen({ navigation }: Props) {
                 (progress) => {
                   // Callback de progression
                   setScanProgress(progress);
+                },
+                (ip) => {
+                  // Callback pour afficher l'IP en cours de scan
+                  setCurrentIP(ip);
                 }
               );
 
@@ -263,6 +268,10 @@ export default function DevicesScreen({ navigation }: Props) {
               </Text>
             )}
 
+            <Text style={styles.currentIPText}>
+              Scan: {currentIP}
+            </Text>
+
             <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
           </View>
         </View>
@@ -396,6 +405,12 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4CAF50',
     marginTop: 8,
+  },
+  currentIPText: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 8,
+    fontFamily: 'monospace',
   },
   spinner: {
     marginTop: 16,

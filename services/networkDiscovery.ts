@@ -65,7 +65,8 @@ const checkRvolutionDevice = async (
 // Fonction pour scanner le réseau local à la recherche d'appareils R_VOLUTION
 export const scanNetwork = async (
   onDeviceFound?: (device: RvolutionDevice) => void,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  onIPScanned?: (ip: string) => void
 ): Promise<RvolutionDevice[]> => {
   const devices: RvolutionDevice[] = [];
   const port = 80;
@@ -92,6 +93,10 @@ export const scanNetwork = async (
         const ipAddress = `${subnet}.${i}`;
         
         const scanPromise = (async () => {
+          if (onIPScanned) {
+            onIPScanned(ipAddress);
+          }
+          
           const device = await checkRvolutionDevice(ipAddress, port);
           
           if (device) {
@@ -124,7 +129,8 @@ export const scanNetwork = async (
 // Fonction pour scanner rapidement les IPs les plus probables
 export const quickScan = async (
   onDeviceFound?: (device: RvolutionDevice) => void,
-  onProgress?: (progress: number) => void
+  onProgress?: (progress: number) => void,
+  onIPScanned?: (ip: string) => void
 ): Promise<RvolutionDevice[]> => {
   const devices: RvolutionDevice[] = [];
   const port = 80;
@@ -147,6 +153,10 @@ export const quickScan = async (
         const ipAddress = `${subnet}.${i}`;
         
         const scanPromise = (async () => {
+          if (onIPScanned) {
+            onIPScanned(ipAddress);
+          }
+          
           const device = await checkRvolutionDevice(ipAddress, port);
           
           if (device) {
