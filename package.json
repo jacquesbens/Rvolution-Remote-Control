@@ -13,7 +13,8 @@
     "copy-icon": "node scripts/copy-new-icon.js",
     "generate-icon": "node scripts/generate-app-icon.js",
     "check-icons": "node scripts/check-icons.js",
-    "diagnose": "node scripts/diagnose-build.js"
+    "diagnose": "node scripts/diagnose-build.js",
+    "verify-build": "node scripts/verify-build.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
@@ -44,7 +45,7 @@
     "react-native-web": "^0.21.0",
     "react-native-webview": "13.15.0",
     "react-native-worklets": "0.5.1",
-    "react-native-worklets-core": "^1.6.2"
+    "react-native-worklets-core": "1.6.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -54,7 +55,8 @@
     "typescript": "~5.9.2"
   },
   "resolutions": {
-    "react-native-worklets": "0.5.1"
+    "react-native-worklets": "0.5.1",
+    "react-native-worklets-core": "1.6.2"
   },
   "private": true
 }
