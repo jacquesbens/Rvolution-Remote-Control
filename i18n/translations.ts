@@ -178,7 +178,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Enregistrer quand même',
     
     // PlayerControlScreen
-    power: 'Alimentation',
+    power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
     numpad: 'Pavé numérique',
@@ -287,7 +287,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Save anyway',
     
     // PlayerControlScreen
-    power: 'Power',
+    power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
     numpad: 'Numpad',
@@ -396,7 +396,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Guardar de todos modos',
     
     // PlayerControlScreen
-    power: 'Encendido',
+    power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
     numpad: 'Teclado numérico',
@@ -505,7 +505,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Trotzdem speichern',
     
     // PlayerControlScreen
-    power: 'Ein/Aus',
+    power: 'ON/OFF',
     powerOn: 'EIN',
     powerOff: 'AUS',
     numpad: 'Ziffernblock',
@@ -614,7 +614,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Salva comunque',
     
     // PlayerControlScreen
-    power: 'Accensione',
+    power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
     numpad: 'Tastierino numerico',
@@ -723,7 +723,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Salvar mesmo assim',
     
     // PlayerControlScreen
-    power: 'Ligar/Desligar',
+    power: 'ON/OFF',
     powerOn: 'LIGAR',
     powerOff: 'DESLIGAR',
     numpad: 'Teclado numérico',
@@ -832,7 +832,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Toch opslaan',
     
     // PlayerControlScreen
-    power: 'Aan/Uit',
+    power: 'ON/OFF',
     powerOn: 'AAN',
     powerOff: 'UIT',
     numpad: 'Nummerblok',
@@ -941,7 +941,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Сохранить в любом случае',
     
     // PlayerControlScreen
-    power: 'Питание',
+    power: 'ON/OFF',
     powerOn: 'ВКЛ',
     powerOff: 'ВЫКЛ',
     numpad: 'Цифровая клавиатура',
@@ -1050,7 +1050,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: '仍然保存',
     
     // PlayerControlScreen
-    power: '电源',
+    power: 'ON/OFF',
     powerOn: '开',
     powerOff: '关',
     numpad: '数字键盘',
@@ -1159,7 +1159,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'とにかく保存',
     
     // PlayerControlScreen
-    power: '電源',
+    power: 'ON/OFF',
     powerOn: 'オン',
     powerOff: 'オフ',
     numpad: 'テンキー',
