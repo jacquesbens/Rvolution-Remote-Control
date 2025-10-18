@@ -179,13 +179,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               >
                 <MaterialIcons name="keyboard-arrow-up" size={48} color="#fff" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.info(), 'info')}
-                disabled={loading === 'info'}
-              >
-                <MaterialIcons name="info" size={36} color="#fff" />
-              </TouchableOpacity>
+              <View style={[styles.dpadButton, styles.auxiliaryButton, { opacity: 0 }]} />
             </View>
             <View style={styles.dpadRow}>
               <TouchableOpacity
@@ -303,7 +297,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               <Text style={styles.smallButtonText}>Volume -</Text>
             </TouchableOpacity>
             
-            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#FF5722')}
+            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#2196F3')}
 
             <TouchableOpacity
               style={styles.volumeButtonLarge}
@@ -320,6 +314,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
           <View style={styles.specialRow}>
+            {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
             {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#2196F3')}
             {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#2196F3')}
           </View>
