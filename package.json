@@ -10,7 +10,8 @@
     "lint": "expo lint",
     "setup-icons": "node scripts/setup-icons.js",
     "generate-icon": "node scripts/generate-app-icon.js",
-    "check-icons": "node scripts/check-icons.js"
+    "check-icons": "node scripts/check-icons.js",
+    "diagnose": "node scripts/diagnose-build.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "^2.0.52",
