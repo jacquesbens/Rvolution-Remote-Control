@@ -128,7 +128,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <Text style={styles.sectionTitle}>⚡ Alimentation</Text>
           <View style={styles.powerRow}>
             {renderSmallButton('power-settings-new', 'Power', () => api.powerToggle(), 'power_toggle', '#F44336')}
-            {renderSmallButton('power', 'ON', () => api.powerOn(), 'power_on', '#4CAF50')}
+            {renderSmallButton('power', 'ON', () => api.powerOn(), 'power_on', '#2196F3')}
             {renderSmallButton('power-off', 'OFF', () => api.powerOff(), 'power_off', '#9E9E9E')}
           </View>
         </View>
@@ -355,7 +355,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <Text style={styles.sectionTitle}>🎨 Fonctions couleur</Text>
           <View style={styles.colorRow}>
             {renderSmallButton('circle', 'Rouge', () => api.functionRed(), 'function_red', '#F44336')}
-            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#4CAF50')}
+            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#2196F3')}
             {renderSmallButton('circle', 'Jaune', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
             {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>

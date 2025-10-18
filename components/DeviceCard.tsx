@@ -16,7 +16,7 @@ export default function DeviceCard({ device, onPress, onDelete }: DeviceCardProp
         <MaterialIcons 
           name="speaker" 
           size={40} 
-          color={device.isOnline ? '#4CAF50' : '#9E9E9E'} 
+          color={device.isOnline ? '#2196F3' : '#9E9E9E'} 
         />
       </View>
       
@@ -26,7 +26,7 @@ export default function DeviceCard({ device, onPress, onDelete }: DeviceCardProp
         <View style={styles.statusContainer}>
           <View style={[
             styles.statusDot,
-            { backgroundColor: device.isOnline ? '#4CAF50' : '#9E9E9E' }
+            { backgroundColor: device.isOnline ? '#2196F3' : '#9E9E9E' }
           ]} />
           <Text style={styles.statusText}>
             {device.isOnline ? 'En ligne' : 'Hors ligne'}

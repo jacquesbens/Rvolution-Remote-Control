@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   scanButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2196F3',
     width: 48,
     height: 48,
     borderRadius: 24,
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#2196F3',
   },
   progressText: {
     fontSize: 14,
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
   foundText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#4CAF50',
+    color: '#2196F3',
     marginTop: 8,
   },
   currentIPText: {
