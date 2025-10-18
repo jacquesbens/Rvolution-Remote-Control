@@ -344,7 +344,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <Text style={styles.sectionTitle}>🎨 Fonctions couleur</Text>
           <View style={styles.colorRow}>
             {renderSmallButton('circle', 'Rouge', () => api.functionRed(), 'function_red', '#F44336')}
-            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#2196F3')}
+            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#4CAF50')}
             {renderSmallButton('circle', 'Jaune', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
             {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>
