@@ -32,6 +32,9 @@ export default function AddDeviceScreen({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [debugInfo, setDebugInfo] = useState('');
 
+  console.log('AddDeviceScreen - appTitle:', t.appTitle);
+  console.log('AddDeviceScreen - language:', t);
+
   const validateIP = (ip: string): boolean => {
     const ipRegex = /^(\d{1,3}\.){3}\d{1,3}$/;
     if (!ipRegex.test(ip)) return false;
