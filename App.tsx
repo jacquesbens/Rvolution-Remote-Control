@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { LanguageProvider } from './contexts/LanguageContext';
 import DevicesScreen from './screens/DevicesScreen';
 import AddDeviceScreen from './screens/AddDeviceScreen';
 import EditDeviceScreen from './screens/EditDeviceScreen';
@@ -60,29 +61,31 @@ export default function App() {
 
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {initialRoute === 'PlayerControl' && initialDevice ? (
-            <>
-              <Stack.Screen 
-                name="PlayerControl" 
-                component={PlayerControlScreen}
-                initialParams={{ device: initialDevice }}
-              />
-              <Stack.Screen name="Devices" component={DevicesScreen} />
-              <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
-              <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
-            </>
-          ) : (
-            <>
-              <Stack.Screen name="Devices" component={DevicesScreen} />
-              <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
-              <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
-              <Stack.Screen name="PlayerControl" component={PlayerControlScreen} />
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <LanguageProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {initialRoute === 'PlayerControl' && initialDevice ? (
+              <>
+                <Stack.Screen 
+                  name="PlayerControl" 
+                  component={PlayerControlScreen}
+                  initialParams={{ device: initialDevice }}
+                />
+                <Stack.Screen name="Devices" component={DevicesScreen} />
+                <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
+                <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name="Devices" component={DevicesScreen} />
+                <Stack.Screen name="AddDevice" component={AddDeviceScreen} />
+                <Stack.Screen name="EditDevice" component={EditDeviceScreen} />
+                <Stack.Screen name="PlayerControl" component={PlayerControlScreen} />
+              </>
+            )}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </LanguageProvider>
     </SafeAreaProvider>
   );
 }

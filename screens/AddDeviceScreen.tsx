@@ -16,6 +16,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../App';
 import { createDeviceFromIP } from '../services/networkDiscovery';
 import { addDevice } from '../utils/storage';
+import { useLanguage } from '../contexts/LanguageContext';
+import LanguageSelector from '../components/LanguageSelector';
 
 type AddDeviceScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'AddDevice'>;
 
@@ -24,6 +26,7 @@ interface Props {
 }
 
 export default function AddDeviceScreen({ navigation }: Props) {
+  const { t } = useLanguage();
   const [ipAddress, setIpAddress] = useState('');
   const [deviceName, setDeviceName] = useState('');
   const [loading, setLoading] = useState(false);
@@ -42,19 +45,19 @@ export default function AddDeviceScreen({ navigation }: Props) {
 
   const handleAddDevice = async () => {
     if (!ipAddress.trim()) {
-      Alert.alert('Erreur', 'Veuillez entrer une adresse IP');
+      Alert.alert(t.error, t.enterIPAddress);
       return;
     }
 
     if (!validateIP(ipAddress)) {
-      Alert.alert('Erreur', 'Adresse IP invalide');
+      Alert.alert(t.error, t.invalidIPAddress);
       return;
     }
 
-    const portNumber = 80; // Port par défaut
+    const portNumber = 80;
 
     setLoading(true);
-    setDebugInfo(`Tentative de connexion à http://${ipAddress}:${portNumber}/status...`);
+    setDebugInfo(`${t.connectionFailed} http://${ipAddress}:${portNumber}/status...`);
 
     try {
       console.log(`🔍 Tentative de connexion à ${ipAddress}:${portNumber}`);
@@ -68,24 +71,19 @@ export default function AddDeviceScreen({ navigation }: Props) {
         await addDevice(device);
         console.log('✅ Appareil ajouté avec succès');
         Alert.alert(
-          'Succès',
-          `Appareil ajouté avec succès\n${device.name}`,
-          [{ text: 'OK', onPress: () => navigation.goBack() }]
+          t.success,
+          `${t.addDeviceSuccess}\n${device.name}`,
+          [{ text: t.ok, onPress: () => navigation.goBack() }]
         );
       } else {
         console.log('❌ Impossible de se connecter à l\'appareil');
         setDebugInfo('');
         Alert.alert(
-          'Connexion impossible',
-          `Impossible de se connecter à http://${ipAddress}:${portNumber}\n\n` +
-          'Vérifiez que :\n' +
-          '• L\'appareil est allumé\n' +
-          '• L\'adresse IP est correcte\n' +
-          '• L\'appareil est sur le même réseau Wi-Fi\n' +
-          '• L\'endpoint /status existe et répond',
+          t.connectionFailed,
+          `${t.connectionFailed} http://${ipAddress}:${portNumber}\n\n${t.connectionFailedMessage}`,
           [
-            { text: 'Réessayer', onPress: handleAddDevice },
-            { text: 'OK', style: 'cancel' }
+            { text: t.retry, onPress: handleAddDevice },
+            { text: t.ok, style: 'cancel' }
           ]
         );
       }
@@ -93,9 +91,9 @@ export default function AddDeviceScreen({ navigation }: Props) {
       console.error('❌ Erreur lors de l\'ajout:', error);
       setDebugInfo('');
       Alert.alert(
-        'Erreur',
-        `Une erreur est survenue :\n${error}\n\nVérifiez votre connexion réseau.`,
-        [{ text: 'OK' }]
+        t.error,
+        `${t.error}:\n${error}`,
+        [{ text: t.ok }]
       );
     } finally {
       setLoading(false);
@@ -115,7 +113,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           >
             <MaterialIcons name="arrow-back" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.title}>Ajouter un appareil</Text>
+          <Text style={styles.title}>{t.appTitle}</Text>
           <View style={styles.placeholder} />
         </View>
 
@@ -124,19 +122,21 @@ export default function AddDeviceScreen({ navigation }: Props) {
             <MaterialIcons name="speaker" size={80} color="#2196F3" />
           </View>
 
-          <Text style={styles.label}>Nom de l&apos;appareil (optionnel)</Text>
+          <LanguageSelector />
+
+          <Text style={styles.label}>{t.deviceNameOptional}</Text>
           <TextInput
             style={styles.input}
-            placeholder="R_VOLUTION Salon"
+            placeholder={t.deviceNamePlaceholder}
             value={deviceName}
             onChangeText={setDeviceName}
             editable={!loading}
           />
 
-          <Text style={styles.label}>Adresse IP *</Text>
+          <Text style={styles.label}>{t.ipAddress}</Text>
           <TextInput
             style={styles.input}
-            placeholder="192.168.1.100"
+            placeholder={t.ipAddressPlaceholder}
             value={ipAddress}
             onChangeText={setIpAddress}
             keyboardType={Platform.OS === 'ios' ? 'numbers-and-punctuation' : 'default'}
@@ -161,7 +161,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
             ) : (
               <>
                 <MaterialIcons name="add" size={24} color="#fff" />
-                <Text style={styles.addButtonText}>Ajouter l&apos;appareil</Text>
+                <Text style={styles.addButtonText}>{t.addDeviceButton}</Text>
               </>
             )}
           </TouchableOpacity>
@@ -169,9 +169,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           <View style={styles.infoBox}>
             <MaterialIcons name="info" size={20} color="#2196F3" />
             <Text style={styles.infoText}>
-              L&apos;application va tenter de se connecter à http://{ipAddress || '...'}/status
-              {'\n\n'}
-              Assurez-vous que votre appareil R_VOLUTION répond à cette URL.
+              {t.infoMessage.replace('{ip}', ipAddress || '...')}
             </Text>
           </View>
         </View>
