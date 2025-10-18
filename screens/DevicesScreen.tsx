@@ -245,6 +245,10 @@ export default function DevicesScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.appHeader}>
+        <Text style={styles.appTitle}>{t.appTitle}</Text>
+      </View>
+
       <View style={styles.header}>
         <Text style={styles.title}>{t.myDevices}</Text>
         <View style={styles.headerButtons}>
@@ -433,6 +437,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  appHeader: {
+    backgroundColor: '#2196F3',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   header: {
     flexDirection: 'row',
