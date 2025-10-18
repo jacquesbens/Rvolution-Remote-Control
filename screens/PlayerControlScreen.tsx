@@ -93,6 +93,23 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
     </TouchableOpacity>
   );
 
+  const renderDpadButton = (
+    icon: keyof typeof MaterialIcons.glyphMap,
+    label: string | null,
+    command: () => Promise<boolean>,
+    commandName: string,
+    iconSize: number = 36
+  ) => (
+    <TouchableOpacity
+      style={[styles.dpadButton, styles.auxiliaryButton]}
+      onPress={() => handleCommand(command, commandName)}
+      disabled={loading === commandName}
+    >
+      <MaterialIcons name={icon} size={iconSize} color="#fff" />
+      {label && <Text style={styles.dpadButtonText}>{label}</Text>}
+    </TouchableOpacity>
+  );
+
   const renderNumpadButton = (
     icon: keyof typeof MaterialIcons.glyphMap,
     label: string,
@@ -167,13 +184,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <Text style={styles.sectionTitle}>🎯 {t.navigation}</Text>
           <View style={styles.dpadContainer}>
             <View style={styles.dpadRow}>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.home(), 'home')}
-                disabled={loading === 'home'}
-              >
-                <MaterialIcons name="home" size={36} color="#fff" />
-              </TouchableOpacity>
+              {renderDpadButton('home', null, () => api.home(), 'home')}
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorUp(), 'cursor_up')}
@@ -207,13 +218,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               </TouchableOpacity>
             </View>
             <View style={styles.dpadRow}>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.menu(), 'menu')}
-                disabled={loading === 'menu'}
-              >
-                <MaterialIcons name="menu" size={36} color="#fff" />
-              </TouchableOpacity>
+              {renderDpadButton('menu', t.menu, () => api.menu(), 'menu')}
               <TouchableOpacity
                 style={styles.dpadButton}
                 onPress={() => handleCommand(() => api.cursorDown(), 'cursor_down')}
@@ -221,13 +226,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               >
                 <MaterialIcons name="keyboard-arrow-down" size={48} color="#fff" />
               </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.dpadButton, styles.auxiliaryButton]}
-                onPress={() => handleCommand(() => api.return(), 'return')}
-                disabled={loading === 'return'}
-              >
-                <MaterialIcons name="arrow-back" size={36} color="#fff" />
-              </TouchableOpacity>
+              {renderDpadButton('arrow-back', null, () => api.return(), 'return')}
             </View>
           </View>
         </View>
@@ -562,5 +561,12 @@ const styles = StyleSheet.create({
   muteRow: {
     flexDirection: 'row',
     justifyContent: 'center',
+  },
+  dpadButtonText: {
+    color: '#fff',
+    fontSize: 11,
+    fontWeight: 'bold',
+    marginTop: 4,
+    textAlign: 'center',
   },
 });
