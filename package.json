@@ -14,7 +14,8 @@
     "generate-icon": "node scripts/generate-app-icon.js",
     "check-icons": "node scripts/check-icons.js",
     "diagnose": "node scripts/diagnose-build.js",
-    "verify-build": "node scripts/verify-build.js"
+    "verify-build": "node scripts/verify-build.js",
+    "fix-icon": "node scripts/fix-icon.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~6.1.2",
