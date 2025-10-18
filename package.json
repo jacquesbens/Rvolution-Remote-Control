@@ -7,7 +7,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "setup-icons": "node scripts/setup-icons.js"
   },
   "dependencies": {
     "@basictech/expo": "^0.0.5",
