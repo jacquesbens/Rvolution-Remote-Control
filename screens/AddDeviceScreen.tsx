@@ -116,7 +116,7 @@ export default function AddDeviceScreen({ navigation }: Props) {
           >
             <MaterialIcons name="arrow-back" size={24} color="#333" />
           </TouchableOpacity>
-          <Text style={styles.title}>{t.appTitle}</Text>
+          <Text style={styles.title}>{t.addDevice}</Text>
           <View style={styles.placeholder} />
         </View>
 
