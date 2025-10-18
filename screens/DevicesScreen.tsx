@@ -388,7 +388,7 @@ export default function DevicesScreen({ navigation }: Props) {
                     />
                     <View style={styles.deviceItemInfo}>
                       <Text style={styles.deviceItemName}>{item.name}</Text>
-                      <Text style={styles.deviceItemIP}>{item.ipAddress}:{item.port}</Text>
+                      <Text style={styles.deviceItemIP}>{item.ipAddress}</Text>
                     </View>
                   </View>
                   <MaterialIcons
