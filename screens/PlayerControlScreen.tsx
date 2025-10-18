@@ -144,7 +144,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Alimentation */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>⚡ {t.power}</Text>
+          <Text style={styles.sectionTitle}>⚡ {t.powerSection}</Text>
           <View style={styles.powerRow}>
             {renderSmallButton('power-settings-new', t.power, () => api.powerToggle(), 'power_toggle', '#F44336')}
             {renderSmallButton('power', t.powerOn, () => api.powerOn(), 'power_on', '#2196F3')}

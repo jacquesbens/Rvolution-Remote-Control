@@ -68,6 +68,7 @@ export interface Translations {
   saveAnyway: string;
   
   // PlayerControlScreen
+  powerSection: string;
   power: string;
   powerOn: string;
   powerOff: string;
@@ -178,6 +179,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Enregistrer quand même',
     
     // PlayerControlScreen
+    powerSection: 'Alimentation',
     power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
@@ -287,6 +289,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Save anyway',
     
     // PlayerControlScreen
+    powerSection: 'Power',
     power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
@@ -396,6 +399,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Guardar de todos modos',
     
     // PlayerControlScreen
+    powerSection: 'Encendido',
     power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
@@ -505,6 +509,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Trotzdem speichern',
     
     // PlayerControlScreen
+    powerSection: 'Ein/Aus',
     power: 'ON/OFF',
     powerOn: 'EIN',
     powerOff: 'AUS',
@@ -614,6 +619,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Salva comunque',
     
     // PlayerControlScreen
+    powerSection: 'Accensione',
     power: 'ON/OFF',
     powerOn: 'ON',
     powerOff: 'OFF',
@@ -723,6 +729,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Salvar mesmo assim',
     
     // PlayerControlScreen
+    powerSection: 'Ligar/Desligar',
     power: 'ON/OFF',
     powerOn: 'LIGAR',
     powerOff: 'DESLIGAR',
@@ -832,6 +839,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Toch opslaan',
     
     // PlayerControlScreen
+    powerSection: 'Aan/Uit',
     power: 'ON/OFF',
     powerOn: 'AAN',
     powerOff: 'UIT',
@@ -941,6 +949,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'Сохранить в любом случае',
     
     // PlayerControlScreen
+    powerSection: 'Питание',
     power: 'ON/OFF',
     powerOn: 'ВКЛ',
     powerOff: 'ВЫКЛ',
@@ -1050,6 +1059,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: '仍然保存',
     
     // PlayerControlScreen
+    powerSection: '电源',
     power: 'ON/OFF',
     powerOn: '开',
     powerOff: '关',
@@ -1159,6 +1169,7 @@ export const translations: Record<Language, Translations> = {
     saveAnyway: 'とにかく保存',
     
     // PlayerControlScreen
+    powerSection: '電源',
     power: 'ON/OFF',
     powerOn: 'オン',
     powerOff: 'オフ',
