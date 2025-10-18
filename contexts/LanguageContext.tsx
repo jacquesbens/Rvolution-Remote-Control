@@ -32,7 +32,7 @@ const getDeviceLanguage = (): Language => {
 };
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(getDeviceLanguage());
+  const [language, setLanguageState] = useState<Language>('en');
 
   useEffect(() => {
     loadLanguage();
@@ -43,9 +43,15 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       const savedLanguage = await AsyncStorage.getItem(LANGUAGE_KEY);
       if (savedLanguage && translations[savedLanguage as Language]) {
         setLanguageState(savedLanguage as Language);
+      } else {
+        // Si aucune langue n'est sauvegardée, utiliser la langue du device
+        const deviceLang = getDeviceLanguage();
+        setLanguageState(deviceLang);
       }
     } catch (error) {
       console.error('Error loading language:', error);
+      // En cas d'erreur, utiliser la langue du device
+      setLanguageState(getDeviceLanguage());
     }
   };
 
