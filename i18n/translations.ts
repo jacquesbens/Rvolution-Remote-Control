@@ -33,6 +33,7 @@ export interface Translations {
   stopScan: string;
   noDevicesFoundTitle: string;
   noDevicesFoundMessage: string;
+  noDevicesFoundDetailedMessage: string;
   devicesFoundTitle: string;
   devicesFoundSubtitle: string;
   addSelected: string;
@@ -142,6 +143,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Arrêter le scan',
     noDevicesFoundTitle: 'Aucun appareil trouvé',
     noDevicesFoundMessage: 'Aucun appareil R_VOLUTION trouvé sur le réseau.\n\nVérifiez que :\n• Vos appareils sont allumés\n• Ils sont connectés au même réseau Wi-Fi\n• Le port 80 est accessible\n• L\'endpoint /status répond correctement',
+    noDevicesFoundDetailedMessage: 'Aucun appareil réseau n\'a été détecté. Pour ajouter un appareil manuellement, cliquez sur le bouton +.\n\nPour connaître l\'adresse IP de votre lecteur R_volution, rendez-vous dans les « réglages » sous l\'onglet « Réseau ».',
     devicesFoundTitle: 'Appareils trouvés',
     devicesFoundSubtitle: 'Sélectionnez les appareils à ajouter',
     addSelected: 'Ajouter',
@@ -250,6 +252,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Stop scan',
     noDevicesFoundTitle: 'No devices found',
     noDevicesFoundMessage: 'No R_VOLUTION devices found on the network.\n\nCheck that:\n• Your devices are turned on\n• They are connected to the same Wi-Fi network\n• Port 80 is accessible\n• The /status endpoint responds correctly',
+    noDevicesFoundDetailedMessage: 'No network devices were detected. To add a device manually, click the + button.\n\nTo find the IP address of your R_volution player, go to "settings" under the "Network" tab.',
     devicesFoundTitle: 'Devices found',
     devicesFoundSubtitle: 'Select devices to add',
     addSelected: 'Add',
@@ -358,6 +361,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Detener escaneo',
     noDevicesFoundTitle: 'No se encontraron dispositivos',
     noDevicesFoundMessage: 'No se encontraron dispositivos R_VOLUTION en la red.\n\nVerifique que:\n• Sus dispositivos estén encendidos\n• Estén conectados a la misma red Wi-Fi\n• El puerto 80 sea accesible\n• El endpoint /status responda correctamente',
+    noDevicesFoundDetailedMessage: 'No se detectaron dispositivos de red. Para agregar un dispositivo manualmente, haga clic en el botón +.\n\nPara conocer la dirección IP de su reproductor R_volution, vaya a "configuración" en la pestaña "Red".',
     devicesFoundTitle: 'Dispositivos encontrados',
     devicesFoundSubtitle: 'Seleccione los dispositivos para añadir',
     addSelected: 'Añadir',
@@ -466,6 +470,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Scan stoppen',
     noDevicesFoundTitle: 'Keine Geräte gefunden',
     noDevicesFoundMessage: 'Keine R_VOLUTION-Geräte im Netzwerk gefunden.\n\nÜberprüfen Sie:\n• Ihre Geräte sind eingeschaltet\n• Sie sind mit demselben WLAN verbunden\n• Port 80 ist zugänglich\n• Der /status-Endpunkt antwortet korrekt',
+    noDevicesFoundDetailedMessage: 'Es wurden keine Netzwerkgeräte erkannt. Um ein Gerät manuell hinzuzufügen, klicken Sie auf die Schaltfläche +.\n\nUm die IP-Adresse Ihres R_volution-Players zu finden, gehen Sie zu "Einstellungen" unter der Registerkarte "Netzwerk".',
     devicesFoundTitle: 'Geräte gefunden',
     devicesFoundSubtitle: 'Wählen Sie Geräte zum Hinzufügen aus',
     addSelected: 'Hinzufügen',
@@ -574,6 +579,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Ferma scansione',
     noDevicesFoundTitle: 'Nessun dispositivo trovato',
     noDevicesFoundMessage: 'Nessun dispositivo R_VOLUTION trovato sulla rete.\n\nVerifica che:\n• I tuoi dispositivi siano accesi\n• Siano connessi alla stessa rete Wi-Fi\n• La porta 80 sia accessibile\n• L\'endpoint /status risponda correttamente',
+    noDevicesFoundDetailedMessage: 'Nessun dispositivo di rete è stato rilevato. Per aggiungere un dispositivo manualmente, fare clic sul pulsante +.\n\nPer conoscere l\'indirizzo IP del lettore R_volution, andare in "impostazioni" nella scheda "Rete".',
     devicesFoundTitle: 'Dispositivi trovati',
     devicesFoundSubtitle: 'Seleziona i dispositivi da aggiungere',
     addSelected: 'Aggiungi',
@@ -682,6 +688,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Parar escaneamento',
     noDevicesFoundTitle: 'Nenhum dispositivo encontrado',
     noDevicesFoundMessage: 'Nenhum dispositivo R_VOLUTION encontrado na rede.\n\nVerifique se:\n• Seus dispositivos estão ligados\n• Estão conectados à mesma rede Wi-Fi\n• A porta 80 está acessível\n• O endpoint /status responde corretamente',
+    noDevicesFoundDetailedMessage: 'Nenhum dispositivo de rede foi detectado. Para adicionar um dispositivo manualmente, clique no botão +.\n\nPara saber o endereço IP do seu reprodutor R_volution, vá em "configurações" na aba "Rede".',
     devicesFoundTitle: 'Dispositivos encontrados',
     devicesFoundSubtitle: 'Selecione os dispositivos para adicionar',
     addSelected: 'Adicionar',
@@ -790,6 +797,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Scan stoppen',
     noDevicesFoundTitle: 'Geen apparaten gevonden',
     noDevicesFoundMessage: 'Geen R_VOLUTION-apparaten gevonden op het netwerk.\n\nControleer of:\n• Uw apparaten zijn ingeschakeld\n• Ze zijn verbonden met hetzelfde Wi-Fi-netwerk\n• Poort 80 toegankelijk is\n• Het /status-eindpunt correct reageert',
+    noDevicesFoundDetailedMessage: 'Er zijn geen netwerkapparaten gedetecteerd. Om handmatig een apparaat toe te voegen, klikt u op de knop +.\n\nOm het IP-adres van uw R_volution-speler te vinden, gaat u naar "instellingen" onder het tabblad "Netwerk".',
     devicesFoundTitle: 'Apparaten gevonden',
     devicesFoundSubtitle: 'Selecteer apparaten om toe te voegen',
     addSelected: 'Toevoegen',
@@ -898,6 +906,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'Остановить сканирование',
     noDevicesFoundTitle: 'Устройства не найдены',
     noDevicesFoundMessage: 'Устройства R_VOLUTION не найдены в сети.\n\nПроверьте:\n• Ваши устройства включены\n• Они подключены к той же сети Wi-Fi\n• Порт 80 доступен\n• Конечная точка /status отвечает правильно',
+    noDevicesFoundDetailedMessage: 'Сетевые устройства не обнаружены. Чтобы добавить устройство вручную, нажмите кнопку +.\n\nЧтобы узнать IP-адрес вашего плеера R_volution, перейдите в "настройки" на вкладке "Сеть".',
     devicesFoundTitle: 'Найдены устройства',
     devicesFoundSubtitle: 'Выберите устройства для добавления',
     addSelected: 'Добавить',
@@ -1006,6 +1015,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: '停止扫描',
     noDevicesFoundTitle: '未找到设备',
     noDevicesFoundMessage: '在网络上未找到 R_VOLUTION 设备。\n\n请检查：\n• 您的设备已打开\n• 它们连接到同一个 Wi-Fi 网络\n• 端口 80 可访问\n• /status 端点正确响应',
+    noDevicesFoundDetailedMessage: '未检测到网络设备。要手动添加设备，请单击 + 按钮。\n\n要查找 R_volution 播放器的 IP 地址，请转到"网络"选项卡下的"设置"。',
     devicesFoundTitle: '找到设备',
     devicesFoundSubtitle: '选择要添加的设备',
     addSelected: '添加',
@@ -1114,6 +1124,7 @@ export const translations: Record<Language, Translations> = {
     stopScan: 'スキャンを停止',
     noDevicesFoundTitle: 'デバイスが見つかりません',
     noDevicesFoundMessage: 'ネットワーク上に R_VOLUTION デバイスが見つかりませんでした。\n\n確認してください：\n• デバイスの電源が入っている\n• 同じ Wi-Fi ネットワークに接続されている\n• ポート 80 にアクセスできる\n• /status エンドポイントが正しく応答する',
+    noDevicesFoundDetailedMessage: 'ネットワークデバイスが検出されませんでした。手動でデバイスを追加するには、+ ボタンをクリックしてください。\n\nR_volution プレーヤーの IP アドレスを確認するには、「ネットワーク」タブの「設定」に移動してください。',
     devicesFoundTitle: 'デバイスが見つかりました',
     devicesFoundSubtitle: '追加するデバイスを選択',
     addSelected: '追加',

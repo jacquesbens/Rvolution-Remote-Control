@@ -125,7 +125,7 @@ export default function DevicesScreen({ navigation }: Props) {
               } else {
                 Alert.alert(
                   t.noDevicesFoundTitle,
-                  t.noDevicesFoundMessage,
+                  t.noDevicesFoundDetailedMessage,
                   [
                     { text: t.retry, onPress: handleScanNetwork },
                     { text: t.addManually, onPress: () => navigation.navigate('AddDevice') },
