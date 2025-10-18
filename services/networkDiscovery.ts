@@ -133,6 +133,7 @@ export const scanNetwork = async (
       const ipAddress = `${subnet}.${i}`;
       
       const scanPromise = (async () => {
+        // Afficher l'IP avant de la scanner
         if (onIPScanned) {
           onIPScanned(ipAddress);
         }
@@ -148,6 +149,7 @@ export const scanNetwork = async (
           }
         }
         
+        // Mettre à jour la progression après chaque scan
         scannedIPs++;
         if (onProgress) {
           onProgress(scannedIPs / totalIPs);
@@ -193,6 +195,7 @@ export const quickScan = async (
       const ipAddress = `${subnet}.${i}`;
       
       const scanPromise = (async () => {
+        // Afficher l'IP avant de la scanner
         if (onIPScanned) {
           onIPScanned(ipAddress);
         }
@@ -206,6 +209,7 @@ export const quickScan = async (
           }
         }
         
+        // Mettre à jour la progression après chaque scan
         scannedIPs++;
         if (onProgress) {
           onProgress(scannedIPs / totalIPs);
