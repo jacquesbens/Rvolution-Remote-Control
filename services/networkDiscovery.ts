@@ -2,6 +2,20 @@ import { RvolutionDevice } from '../types';
 import { Platform } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 
+// Variable globale pour contrôler l'arrêt du scan
+let shouldStopScan = false;
+
+// Fonction pour arrêter le scan en cours
+export const stopScan = () => {
+  shouldStopScan = true;
+  console.log('🛑 Arrêt du scan demandé...');
+};
+
+// Fonction pour réinitialiser le flag d'arrêt
+const resetStopFlag = () => {
+  shouldStopScan = false;
+};
+
 // Fonction pour obtenir l'adresse IP locale de l'appareil et extraire le sous-réseau
 const getLocalSubnet = async (): Promise<string> => {
   // Pour le web, on peut essayer de deviner le réseau local
@@ -113,6 +127,9 @@ export const scanNetwork = async (
   const devices: RvolutionDevice[] = [];
   const port = 80;
   
+  // Réinitialiser le flag d'arrêt au début du scan
+  resetStopFlag();
+  
   console.log('🔍 Démarrage du scan réseau...');
   
   // Obtenir le sous-réseau local
@@ -126,6 +143,12 @@ export const scanNetwork = async (
   const batchSize = 20;
   
   for (let start = 1; start <= 254; start += batchSize) {
+    // Vérifier si l'arrêt a été demandé
+    if (shouldStopScan) {
+      console.log('🛑 Scan arrêté par l\'utilisateur');
+      break;
+    }
+    
     const end = Math.min(start + batchSize - 1, 254);
     const batchPromises: Promise<void>[] = [];
     
@@ -133,6 +156,11 @@ export const scanNetwork = async (
       const ipAddress = `${subnet}.${i}`;
       
       const scanPromise = (async () => {
+        // Vérifier si l'arrêt a été demandé avant chaque scan
+        if (shouldStopScan) {
+          return;
+        }
+        
         // Afficher l'IP avant de la scanner
         if (onIPScanned) {
           onIPScanned(ipAddress);
@@ -163,7 +191,12 @@ export const scanNetwork = async (
     await Promise.all(batchPromises);
   }
   
-  console.log(`✨ Scan terminé. ${devices.length} appareil(s) trouvé(s).`);
+  if (shouldStopScan) {
+    console.log(`⏹️ Scan interrompu. ${devices.length} appareil(s) trouvé(s) avant l'arrêt.`);
+  } else {
+    console.log(`✨ Scan terminé. ${devices.length} appareil(s) trouvé(s).`);
+  }
+  
   return devices;
 };
 
@@ -175,6 +208,9 @@ export const quickScan = async (
 ): Promise<RvolutionDevice[]> => {
   const devices: RvolutionDevice[] = [];
   const port = 80;
+  
+  // Réinitialiser le flag d'arrêt au début du scan
+  resetStopFlag();
   
   console.log('⚡ Démarrage du scan rapide...');
   
@@ -188,6 +224,12 @@ export const quickScan = async (
   const batchSize = 30;
   
   for (let start = 1; start <= 254; start += batchSize) {
+    // Vérifier si l'arrêt a été demandé
+    if (shouldStopScan) {
+      console.log('🛑 Scan rapide arrêté par l\'utilisateur');
+      break;
+    }
+    
     const end = Math.min(start + batchSize - 1, 254);
     const batchPromises: Promise<void>[] = [];
     
@@ -195,6 +237,11 @@ export const quickScan = async (
       const ipAddress = `${subnet}.${i}`;
       
       const scanPromise = (async () => {
+        // Vérifier si l'arrêt a été demandé avant chaque scan
+        if (shouldStopScan) {
+          return;
+        }
+        
         // Afficher l'IP avant de la scanner
         if (onIPScanned) {
           onIPScanned(ipAddress);
@@ -222,7 +269,12 @@ export const quickScan = async (
     await Promise.all(batchPromises);
   }
   
-  console.log(`✨ Scan rapide terminé. ${devices.length} appareil(s) trouvé(s).`);
+  if (shouldStopScan) {
+    console.log(`⏹️ Scan rapide interrompu. ${devices.length} appareil(s) trouvé(s) avant l'arrêt.`);
+  } else {
+    console.log(`✨ Scan rapide terminé. ${devices.length} appareil(s) trouvé(s).`);
+  }
+  
   return devices;
 };
 

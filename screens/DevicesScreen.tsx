@@ -17,7 +17,7 @@ import { RootStackParamList } from '../App';
 import DeviceCard from '../components/DeviceCard';
 import { RvolutionDevice } from '../types';
 import { loadDevices, removeDevice, saveDevices, addDevice } from '../utils/storage';
-import { checkDeviceAvailability, scanNetwork } from '../services/networkDiscovery';
+import { checkDeviceAvailability, scanNetwork, stopScan } from '../services/networkDiscovery';
 
 type DevicesScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Devices'>;
 
@@ -155,6 +155,25 @@ export default function DevicesScreen({ navigation }: Props) {
     );
   };
 
+  const handleStopScan = () => {
+    Alert.alert(
+      'Arrêter le scan',
+      'Voulez-vous vraiment arrêter le scan en cours ?',
+      [
+        { text: 'Continuer', style: 'cancel' },
+        {
+          text: 'Arrêter',
+          style: 'destructive',
+          onPress: () => {
+            stopScan();
+            setScanning(false);
+            loadDevicesList();
+          }
+        }
+      ]
+    );
+  };
+
   const handleDeleteDevice = (deviceId: string) => {
     Alert.alert(
       'Supprimer l\'appareil',
@@ -271,6 +290,14 @@ export default function DevicesScreen({ navigation }: Props) {
             <Text style={styles.currentIPText}>
               Scan: {currentIP}
             </Text>
+
+            <TouchableOpacity
+              style={styles.stopButton}
+              onPress={handleStopScan}
+            >
+              <MaterialIcons name="stop" size={24} color="#fff" />
+              <Text style={styles.stopButtonText}>Arrêter le scan</Text>
+            </TouchableOpacity>
 
             <ActivityIndicator size="large" color="#2196F3" style={styles.spinner} />
           </View>
@@ -412,6 +439,27 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontFamily: 'monospace',
     fontWeight: '600',
+  },
+  stopButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F44336',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  stopButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 8,
   },
   spinner: {
     marginTop: 16,
