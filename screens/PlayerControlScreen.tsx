@@ -316,18 +316,18 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
           <View style={styles.specialRow}>
-            {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#9C27B0')}
-            {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#9C27B0')}
+            {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#2196F3')}
+            {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#2196F3')}
           </View>
           <View style={styles.specialRow}>
-            {renderSmallButton('3d-rotation', '3D', () => api.threeD(), '3d', '#9C27B0')}
-            {renderSmallButton('video-library', 'R_video', () => api.rVideo(), 'r_video', '#9C27B0')}
-            {renderSmallButton('folder', 'Explorer', () => api.explorer(), 'explorer', '#9C27B0')}
-            {renderSmallButton('format-list-bulleted', 'Format', () => api.formatScroll(), 'format', '#9C27B0')}
+            {renderSmallButton('3d-rotation', '3D', () => api.threeD(), '3d', '#2196F3')}
+            {renderSmallButton('video-library', 'R_video', () => api.rVideo(), 'r_video', '#2196F3')}
+            {renderSmallButton('folder', 'Explorer', () => api.explorer(), 'explorer', '#2196F3')}
+            {renderSmallButton('format-list-bulleted', 'Format', () => api.formatScroll(), 'format', '#2196F3')}
           </View>
           <View style={styles.specialRow}>
-            {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#9C27B0')}
-            {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#9C27B0')}
+            {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#2196F3')}
+            {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#2196F3')}
           </View>
         </View>
 
