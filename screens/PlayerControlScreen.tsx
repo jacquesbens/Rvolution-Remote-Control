@@ -101,7 +101,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
     iconSize: number = 36
   ) => (
     <TouchableOpacity
-      style={[styles.dpadButton, styles.auxiliaryButton]}
+      style={[styles.dpadButtonSquare, styles.auxiliaryButton]}
       onPress={() => handleCommand(command, commandName)}
       disabled={loading === commandName}
     >
@@ -501,6 +501,20 @@ const styles = StyleSheet.create({
   dpadButton: {
     backgroundColor: '#2196F3',
     borderRadius: 42.5, // 85 / 2 pour un cercle parfait
+    width: 85,
+    height: 85,
+    alignItems: 'center',
+    justifyContent: 'center',
+    margin: 6,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+  },
+  dpadButtonSquare: {
+    backgroundColor: '#2196F3',
+    borderRadius: 12, // Coins arrondis mais reste carré
     width: 85,
     height: 85,
     alignItems: 'center',
