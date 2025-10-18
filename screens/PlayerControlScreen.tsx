@@ -15,6 +15,7 @@ import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../App';
 import ControlButton from '../components/ControlButton';
 import { RvolutionPlayerAPI } from '../services/playerAPI';
+import { useLanguage } from '../contexts/LanguageContext';
 
 type PlayerControlScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
@@ -31,6 +32,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
   const { device } = route.params;
   const [api] = useState(() => new RvolutionPlayerAPI(device.ipAddress, device.port));
   const [loading, setLoading] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   const handleCommand = async (
     command: () => Promise<boolean>,
@@ -44,13 +46,13 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       console.log(`🎮 Exécution de la commande: ${commandName}`);
       const success = await command();
       if (!success) {
-        Alert.alert('Erreur', `Impossible d\\'exécuter la commande: ${commandName}`);
+        Alert.alert(t.error, `${t.commandError}: ${commandName}`);
       } else {
         console.log(`✅ Commande ${commandName} exécutée avec succès`);
       }
     } catch (error) {
       console.error(`❌ Erreur lors de l\\'exécution de ${commandName}:`, error);
-      Alert.alert('Erreur', 'Une erreur est survenue');
+      Alert.alert(t.error, t.commandError);
     } finally {
       setLoading(null);
     }
@@ -125,17 +127,17 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Alimentation */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>⚡ Alimentation</Text>
+          <Text style={styles.sectionTitle}>⚡ {t.power}</Text>
           <View style={styles.powerRow}>
-            {renderSmallButton('power-settings-new', 'Power', () => api.powerToggle(), 'power_toggle', '#F44336')}
-            {renderSmallButton('power', 'ON', () => api.powerOn(), 'power_on', '#2196F3')}
-            {renderSmallButton('power-off', 'OFF', () => api.powerOff(), 'power_off', '#9E9E9E')}
+            {renderSmallButton('power-settings-new', t.power, () => api.powerToggle(), 'power_toggle', '#F44336')}
+            {renderSmallButton('power', t.powerOn, () => api.powerOn(), 'power_on', '#2196F3')}
+            {renderSmallButton('power-off', t.powerOff, () => api.powerOff(), 'power_off', '#9E9E9E')}
           </View>
         </View>
 
         {/* Pavé numérique */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔢 Pavé numérique</Text>
+          <Text style={styles.sectionTitle}>🔢 {t.numpad}</Text>
           <View style={styles.numberPad}>
             <View style={styles.numberRow}>
               {renderNumberButton(1)}
@@ -153,16 +155,16 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               {renderNumberButton(9)}
             </View>
             <View style={styles.numberRow}>
-              {renderNumpadButton('subtitles', 'Sous-titres', () => api.subtitle(), 'subtitle')}
+              {renderNumpadButton('subtitles', t.subtitle, () => api.subtitle(), 'subtitle')}
               {renderNumberButton(0)}
-              {renderNumpadButton('audiotrack', 'Audio', () => api.audio(), 'audio')}
+              {renderNumpadButton('audiotrack', t.audio, () => api.audio(), 'audio')}
             </View>
           </View>
         </View>
 
         {/* Navigation curseur */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎯 Navigation</Text>
+          <Text style={styles.sectionTitle}>🎯 {t.navigation}</Text>
           <View style={styles.dpadContainer}>
             <View style={styles.dpadRow}>
               <TouchableOpacity
@@ -232,25 +234,25 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Contrôles de lecture */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>▶️ Lecture</Text>
+          <Text style={styles.sectionTitle}>▶️ {t.playback}</Text>
           <View style={styles.playbackRow}>
             <ControlButton
               icon="play-arrow"
-              label="Play"
+              label={t.play}
               onPress={() => handleCommand(() => api.play(), 'play')}
               loading={loading === 'play'}
               size="small"
             />
             <ControlButton
               icon="pause"
-              label="Pause"
+              label={t.pause}
               onPress={() => handleCommand(() => api.pause(), 'pause')}
               loading={loading === 'pause'}
               size="small"
             />
             <ControlButton
               icon="stop"
-              label="Stop"
+              label={t.stop}
               onPress={() => handleCommand(() => api.stop(), 'stop')}
               loading={loading === 'stop'}
               size="small"
@@ -259,22 +261,22 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
           <View style={styles.playbackRow}>
             <ControlButton
               icon="skip-previous"
-              label="Préc."
+              label={t.previous}
               onPress={() => handleCommand(() => api.previous(), 'previous')}
               loading={loading === 'previous'}
               size="small"
             />
             <ControlButton
               icon="skip-next"
-              label="Suiv."
+              label={t.next}
               onPress={() => handleCommand(() => api.next(), 'next')}
               loading={loading === 'next'}
               size="small"
             />
           </View>
           <View style={styles.playbackRow}>
-            {renderSmallButton('fast-rewind', 'Retour rapide', () => api.fastReverse(), 'fast_reverse', '#2196F3')}
-            {renderSmallButton('fast-forward', 'Avance rapide', () => api.fastForward(), 'fast_forward', '#2196F3')}
+            {renderSmallButton('fast-rewind', t.fastRewind, () => api.fastReverse(), 'fast_reverse', '#2196F3')}
+            {renderSmallButton('fast-forward', t.fastForward, () => api.fastForward(), 'fast_forward', '#2196F3')}
           </View>
           <View style={styles.playbackRow}>
             {renderSmallButton('replay-10', '-60s', () => api.rewind60Sec(), 'rewind_60', '#2196F3')}
@@ -286,7 +288,7 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
 
         {/* Volume */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🔊 Volume</Text>
+          <Text style={styles.sectionTitle}>🔊 {t.volume}</Text>
           <View style={styles.volumeRow}>
             <TouchableOpacity
               style={styles.volumeButtonLarge}
@@ -294,10 +296,10 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               disabled={loading === 'volume_down'}
             >
               <MaterialIcons name="volume-down" size={32} color="#fff" />
-              <Text style={styles.smallButtonText}>Volume -</Text>
+              <Text style={styles.smallButtonText}>{t.volume} -</Text>
             </TouchableOpacity>
             
-            {renderSmallButton('volume-off', 'Muet', () => api.mute(), 'mute', '#2196F3')}
+            {renderSmallButton('volume-off', t.mute, () => api.mute(), 'mute', '#2196F3')}
 
             <TouchableOpacity
               style={styles.volumeButtonLarge}
@@ -305,48 +307,48 @@ export default function PlayerControlScreen({ navigation, route }: Props) {
               disabled={loading === 'volume_up'}
             >
               <MaterialIcons name="volume-up" size={32} color="#fff" />
-              <Text style={styles.smallButtonText}>Volume +</Text>
+              <Text style={styles.smallButtonText}>{t.volume} +</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Fonctions spéciales */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎬 Fonctions spéciales</Text>
+          <Text style={styles.sectionTitle}>🎬 {t.specialFunctions}</Text>
           <View style={styles.specialRow}>
-            {renderSmallButton('info', 'Info', () => api.info(), 'info', '#2196F3')}
-            {renderSmallButton('repeat', 'Répéter', () => api.repeat(), 'repeat', '#2196F3')}
-            {renderSmallButton('zoom-in', 'Zoom', () => api.zoom(), 'zoom', '#2196F3')}
+            {renderSmallButton('info', t.info, () => api.info(), 'info', '#2196F3')}
+            {renderSmallButton('repeat', t.repeat, () => api.repeat(), 'repeat', '#2196F3')}
+            {renderSmallButton('zoom-in', t.zoom, () => api.zoom(), 'zoom', '#2196F3')}
           </View>
           <View style={styles.specialRow}>
-            {renderSmallButton('3d-rotation', '3D', () => api.threeD(), '3d', '#2196F3')}
-            {renderSmallButton('video-library', 'R_video', () => api.rVideo(), 'r_video', '#2196F3')}
-            {renderSmallButton('folder', 'Explorer', () => api.explorer(), 'explorer', '#2196F3')}
-            {renderSmallButton('format-list-bulleted', 'Format', () => api.formatScroll(), 'format', '#2196F3')}
+            {renderSmallButton('3d-rotation', t.threeD, () => api.threeD(), '3d', '#2196F3')}
+            {renderSmallButton('video-library', t.rVideo, () => api.rVideo(), 'r_video', '#2196F3')}
+            {renderSmallButton('folder', t.explorer, () => api.explorer(), 'explorer', '#2196F3')}
+            {renderSmallButton('format-list-bulleted', t.format, () => api.formatScroll(), 'format', '#2196F3')}
           </View>
           <View style={styles.specialRow}>
-            {renderSmallButton('brightness-6', 'Dimmer', () => api.dimmer(), 'dimmer', '#2196F3')}
-            {renderSmallButton('delete', 'Suppr.', () => api.deleteKey(), 'delete', '#2196F3')}
+            {renderSmallButton('brightness-6', t.dimmer, () => api.dimmer(), 'dimmer', '#2196F3')}
+            {renderSmallButton('delete', t.deleteKey, () => api.deleteKey(), 'delete', '#2196F3')}
           </View>
         </View>
 
         {/* Pagination */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>📄 Pagination</Text>
+          <Text style={styles.sectionTitle}>📄 {t.pagination}</Text>
           <View style={styles.pageRow}>
-            {renderSmallButton('arrow-upward', 'Page ↑', () => api.pageUp(), 'page_up', '#2196F3')}
-            {renderSmallButton('arrow-downward', 'Page ↓', () => api.pageDown(), 'page_down', '#2196F3')}
+            {renderSmallButton('arrow-upward', t.pageUp, () => api.pageUp(), 'page_up', '#2196F3')}
+            {renderSmallButton('arrow-downward', t.pageDown, () => api.pageDown(), 'page_down', '#2196F3')}
           </View>
         </View>
 
         {/* Boutons de fonction couleur */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>🎨 Fonctions couleur</Text>
+          <Text style={styles.sectionTitle}>🎨 {t.colorFunctions}</Text>
           <View style={styles.colorRow}>
-            {renderSmallButton('circle', 'Rouge', () => api.functionRed(), 'function_red', '#F44336')}
-            {renderSmallButton('circle', 'Vert', () => api.functionGreen(), 'function_green', '#4CAF50')}
-            {renderSmallButton('circle', 'Jaune', () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
-            {renderSmallButton('circle', 'Bleu', () => api.functionBlue(), 'function_blue', '#2196F3')}
+            {renderSmallButton('circle', t.red, () => api.functionRed(), 'function_red', '#F44336')}
+            {renderSmallButton('circle', t.green, () => api.functionGreen(), 'function_green', '#4CAF50')}
+            {renderSmallButton('circle', t.yellow, () => api.functionYellow(), 'function_yellow', '#FFEB3B')}
+            {renderSmallButton('circle', t.blue, () => api.functionBlue(), 'function_blue', '#2196F3')}
           </View>
         </View>
       </ScrollView>
